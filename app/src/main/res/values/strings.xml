@@ -16,4 +16,8 @@
     </string>
     <string name="facebook_app_id">170897913109463</string>
     <string name="fb_login_protocol_scheme">fb170897913109463</string>
+    <string name="bienvenue">Bienvenue</string>
+    <string name="connexion">Connexion</string>
+    <string name="inscription">Inscription</string>
+    <string name="logo_de_l_application">Logo de l\'application</string>
 </resources>

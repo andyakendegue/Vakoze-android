@@ -1,5 +1,6 @@
 package vakoze.blomidtech.vakoze;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -34,15 +35,19 @@ public class StartActivity extends AppCompatActivity {
 
         boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
 
+        if(loggedIn){
+            //LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+        }
 
-        //LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
 
-        /**
-         * Code pour l'enregistrement des achats
-         * logger.logPurchase(BigDecimal.valueOf(4.32), Currency.getInstance("USD"));
+        //
+
+        /*
+          Code pour l'enregistrement des achats
+          logger.logPurchase(BigDecimal.valueOf(4.32), Currency.getInstance("USD"));
          */
         setContentView(R.layout.activity_start);
-        printhashkey();
+        //printhashkey();
         // Initialisation des boutons
         connexion = findViewById(R.id.connexion);
         inscription = findViewById(R.id.inscription);
@@ -74,7 +79,7 @@ public class StartActivity extends AppCompatActivity {
     public void printhashkey(){
 
         try {
-            PackageInfo info = getPackageManager().getPackageInfo(
+            @SuppressLint("PackageManagerGetSignatures") PackageInfo info = getPackageManager().getPackageInfo(
                     "vakoze.blomidtech.vakoze",
                     PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
@@ -84,7 +89,11 @@ public class StartActivity extends AppCompatActivity {
             }
         } catch (PackageManager.NameNotFoundException e) {
 
+            Log.d("NameNotFound", e.toString());
+
         } catch (NoSuchAlgorithmException e) {
+
+            Log.d("NoSuchAlgorithm", e.toString());
 
         }
 

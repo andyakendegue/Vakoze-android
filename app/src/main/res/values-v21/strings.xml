@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bienvenue">Bienvenue</string>
+    <string name="inscription">Inscription</string>
+    <string name="logo_de_l_application">Logo de l\'application</string>
+</resources>
