@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Vakoze</string>
+    <string name="title_activity_login">Connexion</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Mot de passe</string>
+    <string name="action_sign_in">Connexion</string>
+    <string name="action_sign_in_short">Conneion</string>
+    <string name="error_invalid_email">L\'adresse email est invalide</string>
+    <string name="error_invalid_password">le mot de passe est trop court</string>
+    <string name="error_incorrect_password">Ce mot de passe est incorrect</string>
+    <string name="error_field_required">Ce champ est requis</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="facebook_app_id">170897913109463</string>
+    <string name="fb_login_protocol_scheme">fb170897913109463</string>
+</resources>
