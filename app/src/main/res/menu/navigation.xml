@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/actualite"
+        android:icon="@drawable/ic_actualites"
+        android:title=""/>
+
+    <item
+        android:id="@+id/notifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_notifications"
+        android:title="" />
+
+    <item
+        android:id="@+id/add_video_home"
+        android:icon="@drawable/ic_add"
+        android:title="" />
+    <item
+        android:id="@+id/communaute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_communaute"
+        android:title="" />
+    <item
+        android:id="@+id/profil"
+        android:icon="@drawable/ic_profil"
+        android:title="" />
+
+</menu>

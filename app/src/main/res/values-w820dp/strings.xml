@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mettre_en_ligne">Mettre en ligne</string>
+    <string name="previous">previous</string>
+    <string name="play">play</string>
+    <string name="pause">pause</string>
+    <string name="ff">ff</string>
+    <string name="next">next</string>
+    <string name="send">send</string>
+    <string name="rew">rew</string>
+    <string name="send_video_title">Envoyez votre vidéo</string>
+    <string name="dialog_message">Complétez les informations de votre vidéo</string>
+    <string name="nomVideo">Titre de la vidéo</string>
+    <string name="tagsVideo">Descriptif</string>
+    <string name="error_incorrect_email">Cet Email est incorrect</string>
+</resources>

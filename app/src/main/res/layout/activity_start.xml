@@ -1,64 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<android.support.v7.widget.RecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listStart"
+    android:name="vakoze.blomidtech.vakoze.StartActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="vakoze.blomidtech.vakoze.StartActivity">
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    tools:context="vakoze.blomidtech.vakoze.StartActivity"
+    tools:listitem="@layout/fragment_video" />
 
-    <GridLayout
-        android:id="@+id/gridLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-    </GridLayout>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="223dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="@string/bienvenue"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/inscription"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="33dp"
-        android:text="@string/inscription"
-        android:textColorLink="@color/primaryDark"
-        app:layout_constraintBottom_toBottomOf="@+id/connexion"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/connexion"
-        android:layout_marginLeft="33dp" />
-
-    <Button
-        android:id="@+id/connexion"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="55dp"
-        android:layout_marginEnd="47dp"
-        android:text="@string/connexion"
-        android:textColorLink="@color/primaryDark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="47dp" />
-</android.support.constraint.ConstraintLayout>
-
+    <!--
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/videoGrid"
+        android:name="vakoze.blomidtech.vakoze.StartActivity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="180dp"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="2"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"
+        tools:context="vakoze.blomidtech.vakoze.StartActivity" />
+        -->

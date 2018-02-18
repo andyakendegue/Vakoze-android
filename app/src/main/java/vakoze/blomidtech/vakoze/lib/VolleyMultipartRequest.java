@@ -24,7 +24,8 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
 
     private final String twoHyphens = "--";
     private final String lineEnd = "\r\n";
-    private final String boundary = "apiclient-" + System.currentTimeMillis();
+    //private final String boundary = "apiclient-" + System.currentTimeMillis();
+    private final String boundary = "vakoze-" + System.currentTimeMillis();
 
     private Response.Listener<NetworkResponse> mListener;
     private Response.ErrorListener mErrorListener;
@@ -47,6 +48,7 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
     @Override
     public String getBodyContentType() {
         return "multipart/form-data;boundary=" + boundary;
+        //return "multipart/form-data";
     }
 
     @Override

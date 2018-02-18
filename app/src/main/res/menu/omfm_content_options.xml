@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- First button is the initial Fab of the menu -->
+    <!-- Title here can be empty if you don't to add any action in the main button -->
+    <item
+        android:id="@+id/main"
+        android:icon="@drawable/ic_share"
+        android:title=""/>
+
+    <!-- Options buttons of the Fab menu -->
+    <item
+        android:id="@+id/mail"
+        android:icon="@drawable/ic_mail"
+        android:title=""/>
+    <item
+        android:id="@+id/facebook"
+        android:icon="@drawable/ic_facebook"
+        android:title="" />
+
+    <item
+        android:id="@+id/twitter"
+        android:icon="@drawable/ic_twitter"
+        android:title="" />
+
+    <item
+        android:id="@+id/whatsapp"
+        android:icon="@drawable/ic_whatsapp"
+        android:title="" />
+
+    <item
+        android:id="@+id/linkedin"
+        android:icon="@drawable/ic_linkedin"
+        android:title="" />
+
+</menu>

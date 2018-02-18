@@ -3,9 +3,14 @@
     <color name="colorPrimary">#ff9800</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">#ffffff</color>
     <color name="text_color_primary">#878686</color>
     <color name="primaryDark">#ff6d00</color>
     <color name="btnError">#d32f2f</color>
     <color name="btnValid">#00C853</color>
+    <color name="cardview_light_background">#fafafa</color>
+    <color name="brownLight">#795548</color>
+    <color name="brownDark">#5d4037</color>
+    <color name="greenLight">#2E7D32</color>
+    <color name="grey">#bdbdbd</color>
 </resources>

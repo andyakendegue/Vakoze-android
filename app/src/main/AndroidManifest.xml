@@ -9,17 +9,16 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="@xml/vakoze_backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:fullBackupContent="@xml/vakoze_backup_rules">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
@@ -29,43 +28,143 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignupActivity"
-            android:parentActivityName=".StartActivity" >
+        <activity
+            android:name=".SignupActivity"
+            android:parentActivityName=".StartActivity">
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".StartActivity" />
-
         </activity>
         <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
-            android:parentActivityName=".StartActivity" >
-        <!-- Parent activity meta-data to support 4.0 and lower -->
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".StartActivity" />
+            android:name=".InscriptionActivity"
+            android:parentActivityName=".LoginActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".StartActivity" />
         </activity>
-        <activity android:name=".StartActivity"/>
+        <activity android:name=".StartActivity" />
+        <activity
+            android:name=".ProfilActivity"
+            android:label="@string/title_activity_profil"
+            android:parentActivityName=".TimelineActivity"
+            android:theme="@style/AppTheme.NoActionBar">
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimelineActivity" />
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AjoutVideoActivity"
+            android:parentActivityName=".MainActivity">
 
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".UploadActivity"
+            android:parentActivityName=".TimelineActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimelineActivity" />
+        </activity>
+        <activity
+            android:name=".TimelineActivity"
+            android:label="@string/title_activity_timeline" />
+        <activity
+            android:name=".PublicTimelineActivity"
+            android:label="@string/title_activity_timeline" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login" />
+        <activity android:name=".MessengerActivity" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <!-- Services -->
+        <service android:name=".lib.MessengingToken">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".ModifierInfosActivity"
+            android:parentActivityName=".TimelineActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimelineActivity" />
+        </activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ModifyPasswordActivity"
+            android:parentActivityName=".TimelineActivity">
 
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimelineActivity" />
+        </activity>
+        <activity
+            android:name=".PublicBoxActivity"
+            android:parentActivityName=".StartActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".StartActivity" />
+        </activity>
+        <activity
+            android:name=".BoxActivity"
+            android:parentActivityName=".TimelineActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimelineActivity" />
+        </activity>
+
+        <service
+            android:name=".services.UserInfoService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".CommentairesActivity"></activity>
     </application>
 
 </manifest>

@@ -9,18 +9,10 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:id="@+id/login_activity"
     tools:context="vakoze.blomidtech.vakoze.LoginActivity">
 
     <!-- Login progress -->
-    <ImageView
-        android:contentDescription="@string/logo_de_l_application"
-        android:id="@+id/imageView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        app:srcCompat="@drawable/logo" />
-
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
@@ -28,6 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
+
+
 
     <ScrollView
         android:id="@+id/login_form"
@@ -39,6 +33,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <ImageView
+                android:contentDescription="@string/logo_de_l_application"
+                android:id="@+id/imageView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                app:srcCompat="@drawable/logo" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -73,31 +75,62 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/email_sign_in_button"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
+                android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in"
-                android:textColorLink="@color/primaryDark"
-                android:textStyle="bold" />
-            <com.facebook.login.widget.LoginButton
-                android:id="@+id/login_button"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/email_login_button"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/action_sign_in"
+                    android:textColorLink="@color/primaryDark"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/email_register_button"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inscription"
+                    android:textColorLink="@color/primaryDark"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp" />
 
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/sign_in_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp"/>
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/facebook_connect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+                <com.google.android.gms.common.SignInButton
+
+                    android:id="@+id/google_connect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/common_google_signin_btn_text_dark_focused" />
+
+
+
+            </LinearLayout>
+
+
+
 
 
         </LinearLayout>
