@@ -42,7 +42,7 @@ public class SharedPrefManager {
     public void userLogin(User user) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(KEY_ID, user.getId());
+        editor.putLong(KEY_ID, user.getId());
         editor.putString(KEY_UID, user.getU_id());
         editor.putString(KEY_NOM, user.getNom());
         editor.putString(KEY_PRENOM, user.getPrenom());
@@ -56,7 +56,7 @@ public class SharedPrefManager {
     public void userProfileLogin(User user) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(KEY_ID, user.getId());
+        editor.putLong(KEY_ID, user.getId());
         editor.putString(KEY_UID, user.getU_id());
         editor.putString(KEY_NOM, user.getNom());
         editor.putString(KEY_PRENOM, user.getPrenom());
@@ -76,8 +76,10 @@ public class SharedPrefManager {
     //this method will give the logged in user
     public User getUser() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        Long def = (long) -1;
         return new User(
-                sharedPreferences.getInt(KEY_ID, -1),
+
+                sharedPreferences.getLong(KEY_ID, 0L),
                 sharedPreferences.getString(KEY_UID, null),
                 sharedPreferences.getString(KEY_NOM, null),
                 sharedPreferences.getString(KEY_PRENOM, null),

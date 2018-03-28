@@ -244,7 +244,7 @@ public class StartActivity extends AppCompatActivity {
                         if (videoGroupList!=null) {
                             //Toast.makeText(getContext(), videoGroupList.get(1).getNom(), Toast.LENGTH_SHORT).show();
 
-                            videosAdapter = new PublicVideoAdapter(StartActivity.this, videoGroupList);
+                            //videosAdapter = new PublicVideoAdapter(StartActivity.this, videoGroupList);
                             //timelineAdapter = new TimelineAdapter(StartActivity.this, videoGroupList);
                             recyclerView.setAdapter(videosAdapter);
                             //gridView.setAdapter(timelineAdapter);

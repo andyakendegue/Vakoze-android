@@ -1,23 +1,35 @@
 package vakoze.blomidtech.vakoze;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -26,12 +38,22 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import vakoze.blomidtech.vakoze.fragments.AjoutVideoFragment;
+import vakoze.blomidtech.vakoze.fragments.CommunauteFragment;
+import vakoze.blomidtech.vakoze.fragments.NotificationsFragment;
+import vakoze.blomidtech.vakoze.fragments.ProfilFragment;
+import vakoze.blomidtech.vakoze.fragments.videoFragment;
+import vakoze.blomidtech.vakoze.lib.Config;
 import vakoze.blomidtech.vakoze.lib.SharedPrefManager;
 import vakoze.blomidtech.vakoze.lib.Utility;
 import vakoze.blomidtech.vakoze.models.Video;
+import vakoze.blomidtech.vakoze.utils.NotificationUtils;
 
-public class TimelineActivity extends AppCompatActivity implements videoFragment.OnListFragmentInteractionListener,
+import static vakoze.blomidtech.vakoze.SplashActivity.RequestPermissionCode;
+
+public class TimelineActivity extends AppCompatActivity implements videoFragment.OnFragmentInteractionListener,
         ProfilFragment.OnFragmentInteractionListener,
         CommunauteFragment.OnFragmentInteractionListener,
         NotificationsFragment.OnFragmentInteractionListener,AjoutVideoFragment.OnFragmentInteractionListener {
@@ -48,6 +70,9 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
     private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
     private Cursor cursor = null;
     private int idx = 0;
+
+    private static final String TAG = TimelineActivity.class.getSimpleName();
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -99,7 +124,7 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
 
     @Override
     protected void onStart(){
-        super.onStart();
+            super.onStart();
         FacebookSdk.sdkInitialize(getApplicationContext());
         // Configure sign-in to request the user's ID, email address, and basic
 // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -123,7 +148,10 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
 // Remember that you should never show the action bar if the
 // status bar is hidden, so hide that too if necessary.
         ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        if (actionBar != null) {
+            actionBar.setTitle("");
+        }
+        //actionBar.hide();
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -142,6 +170,34 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
 
             }
         });
+
+
+
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                // checking for type intent filter
+                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
+                    // gcm successfully registered
+                    // now subscribe to `global` topic to receive app wide notifications
+                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
+
+                    displayFirebaseRegId();
+
+                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+                    // new push notification is received
+
+                    String message = intent.getStringExtra("message");
+
+                    Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
+
+
+                }
+            }
+        };
+
+        displayFirebaseRegId();
 
     }
 
@@ -165,10 +221,6 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
 
     }
 
-    @Override
-    public void onListFragmentInteraction(Video item) {
-
-    }
     public void signOut(){
 
 
@@ -186,10 +238,11 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 boolean result= Utility.checkPermission(TimelineActivity.this);
+                boolean cameraRequest = EnableRuntimePermissionToAccessCamera();
 
                 if (items[item].equals("Prendre une video")) {
                     userChoosenTask ="Prendre une video";
-                    if(result)
+                    if(cameraRequest)
                         cameraIntent();
 
                 } else if (items[item].equals("Choisir depuis le téléphone")) {
@@ -245,7 +298,8 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
                 String selectedPath = getPath(data.getData());
                 String videoType =data.getType();
 
-                Intent i = new Intent(TimelineActivity.this, AjoutVideoActivity.class);
+                //Intent i = new Intent(TimelineActivity.this, AjoutVideoActivity.class);
+                Intent i = new Intent(TimelineActivity.this, EditActivity.class);
                 i.putExtra("filePath", selectedPath);
                 //i.putExtra("fileUri", videoToSend);
                 i.putExtra("type", "gallery");
@@ -269,7 +323,8 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
 
         String videoType =data.getType();
 
-        Intent i = new Intent(TimelineActivity.this, AjoutVideoActivity.class);
+        //Intent i = new Intent(TimelineActivity.this, AjoutVideoActivity.class);
+        Intent i = new Intent(TimelineActivity.this, EditActivity.class);
         i.putExtra("filePath", getRealPathFromURIPath(videoToSend, TimelineActivity.this));
 
         i.putExtra("type", "capture");
@@ -313,5 +368,77 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
 
         return path;
     }
+    // Fetches reg id from shared preferences
+    // and displays on the screen
+    private void displayFirebaseRegId() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
+        String regId = pref.getString("regId", null);
 
+        Log.e(TAG, "Firebase reg id: " + regId);
+/*
+        if (!TextUtils.isEmpty(regId))
+            txtRegId.setText("Firebase Reg Id: " + regId);
+        else
+            txtRegId.setText("Firebase Reg Id is not received yet!");*/
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // register GCM registration complete receiver
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.REGISTRATION_COMPLETE));
+
+        // register new push message receiver
+        // by doing this, the activity will be notified each time a new message arrives
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.PUSH_NOTIFICATION));
+
+        // clear the notification area when the app is opened
+        NotificationUtils.clearNotifications(getApplicationContext());
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
+
+    @Override
+    public void onFragmentInteraction(Video item) {
+
+    }
+
+    // Requesting runtime permission to access camera.
+
+    public boolean EnableRuntimePermissionToAccessCamera(){
+        if (ContextCompat.checkSelfPermission(TimelineActivity.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) TimelineActivity.this, android.Manifest.permission.CAMERA)) {
+                android.support.v7.app.AlertDialog.Builder alertBuilder = new android.support.v7.app.AlertDialog.Builder(TimelineActivity.this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("Permission necessary");
+                alertBuilder.setMessage("Camera access permission is necessary");
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions((Activity) TimelineActivity.this, new String[]{android.Manifest.permission.CAMERA}, RequestPermissionCode);
+                    }
+                });
+                android.support.v7.app.AlertDialog alert = alertBuilder.create();
+                alert.show();
+
+            } else {
+                ActivityCompat.requestPermissions((Activity) TimelineActivity.this, new String[]{android.Manifest.permission.CAMERA}, RequestPermissionCode);
+            }
+            return false;
+        } else {
+            return true;
+        }
+
+
+
+
+
+    }
 }

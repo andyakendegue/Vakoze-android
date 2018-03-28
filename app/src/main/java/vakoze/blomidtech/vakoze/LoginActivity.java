@@ -325,7 +325,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 String profilePicture = "https://graph.facebook.com/" + userId + "/picture?width=500&height=500";
 
 
-                                 User user = new User(1, jsonObject.getString("id"), jsonObject.getString("last_name"), jsonObject.getString("first_name"), jsonObject.getString("email"), "", profilePicture);
+                                 User user = new User((long)1, jsonObject.getString("id"), jsonObject.getString("last_name"), jsonObject.getString("first_name"), jsonObject.getString("email"), "", profilePicture);
                                 facebookAccount = user;
                                 SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
 
@@ -620,10 +620,69 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-
-
             if (buttonClicked.equalsIgnoreCase("login") ) {
-                searchEmailAccount(mEmail,mPassword);
+                //searchEmailAccount(mEmail,mPassword);
+                //our custom volley request
+                VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, EndPoints.UPLOAD_URL+"/login",
+                        new Response.Listener<NetworkResponse>() {
+                            @Override
+                            public void onResponse(NetworkResponse response) {
+                                JSONObject objData = null;
+                                try {
+                                    objData = new JSONObject(new String(response.data));
+
+                                    if(!objData.getBoolean("error")){
+                                        status =true;
+                                        User user = new User(Long.parseLong(objData.getString("id")), objData.getString("u_id"), objData.getString("nom"), objData.getString("prenom"), objData.getString("email"), objData.getString("phone"), objData.getString("profile_pic"));
+                                        SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                                        Intent startTimeline = new Intent(LoginActivity.this, TimelineActivity.class);
+                                        startActivity(startTimeline);
+                                        finish();
+                                    } else if(objData.getBoolean("error")){
+                                        displayToast("Email ou mot de passe incorrect.");
+                                        status =false;
+                                    }
+
+                                    Log.e("VakoError : Json Response - ", objData.toString());
+                                } catch (JSONException e) {
+                                    //Dismiss the dialog
+                                    status =false;
+                                    displayToast("Connexion impossible.");
+                                    e.printStackTrace();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                //Dismiss the dialog
+                                status =false;
+                                displayToast("Authentication failed."+error.getMessage());
+                            }
+                        }) {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("email", mEmail);
+                        params.put("password", mPassword);
+                        return params;
+                    }
+
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> headers = new HashMap<>();
+                        String credentials = "cent:capp7622argent";
+                        String auth = "Basic "
+                                + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+                        //headers.put("Content-Type", "application/json");
+                        headers.put("Authorization", auth);
+                        return headers;
+                    }
+                };
+
+                //adding the request to volley
+                Volley.newRequestQueue(LoginActivity.this).add(volleyMultipartRequest);
 
             } else if (buttonClicked.equalsIgnoreCase("register")){
 
@@ -631,16 +690,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 registerIntent.putExtra("email", mEmail);
                 registerIntent.putExtra("password", mPassword);
                 startActivity(registerIntent);
-
-
-
             }
 
 
-
-
-
-            // TODO: register the new account here.
             return status;
         }
 
@@ -649,23 +701,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
 
             showProgress(false);
-            if (success) {
 
-
-
-            } else {
-
-/*
-                mEmailView.setError(getString(R.string.error_incorrect_email));
-                mEmailView.requestFocus();
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-
-                */
-
-
-                displayToast("Email ou mot de passe incorrect");
-            }
         }
 
         @Override
@@ -699,7 +735,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Signed in successfully, show authenticated UI.
             //updateGoogle(account);
             userAccount = account;
-            searchAccount(account.getEmail());
+            //searchAccount(account.getEmail());
+            searchEmailAccountWithUid(account);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -711,8 +748,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
     private void updateGoogle(GoogleSignInAccount currentUser, User userInfo) {
         // Check for existing Google Sign In account, if the user is already signed in
-
-
 
         if(currentUser != null){
             showProgress(false);
@@ -786,34 +821,33 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    private void tryRegisterGoogleAccount(final String Uid, final String nom, final String prenom, /* String final phone, */ final String email, final String profile_pic){
+    private void tryRegisterGoogleAccount(final String Uid, final String nom, final String prenom,  final String phone,  final String email, final String profile_pic){
         //our custom volley request
-        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.GET, EndPoints.UPLOAD_URL+"/user/add?u_id="+Uid+"&nom="+nom+"&prenom="+prenom+"&password=empty&profile_pic="+profile_pic+"&email="+email,
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, EndPoints.UPLOAD_URL+"/user/add",
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
-                        String obj = new String(response.data);
+                        JSONObject objData = null;
+                        try {
+                            objData = new JSONObject(new String(response.data));
+                            if(objData.getString("error").equals("0")){
 
+                                displayToast("Enregistrement réussi.");
 
-                        if(obj.equalsIgnoreCase("saved")) {
-                            //Dismiss the dialog
-
-                            displayToast("Enregistrement réussi.");
-
-                            searchAccount(userAccount.getEmail());
-                            User currentUser = SharedPrefManager.getInstance(getApplicationContext()).getUser();
-                            updateGoogle(userAccount, currentUser);
-
-
-                        } else {
-
-                            displayToast("L'enregistrement a echoué");
-                            //Dismiss the dialog
-
-
-
+                                //searchAccount(userAccount.getEmail());
+                                User currentUser = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+                                updateGoogle(userAccount, currentUser);
+                            }  else if(objData.getString("error").equals("1")){
+                                displayToast("L'enregistrement a echoué");
+                            } else if(objData.getString("error").equals("2")){
+                                displayToast("L'utilisateur existe déjà");
+                            } else {
+                                displayToast("résultat inconnu"+objData.getString("message"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            displayToast("une erreur s'est produite");
                         }
-
 
                     }
                 },
@@ -839,8 +873,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 params.put("u_id", Uid);
                 params.put("nom", nom);
                 params.put("prenom", prenom);
+                params.put("phone", phone);
                 params.put("email", email);
-                params.put("password", profile_pic);
+                params.put("password", "");
                 params.put("profile_pic", profile_pic);
                 return params;
             }
@@ -848,7 +883,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                String credentials = "admin:admin";
+                String credentials = "cent:capp7622argent";
                 String auth = "Basic "
                         + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
                 headers.put("Content-Type", "application/json");
@@ -934,6 +969,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //adding the request to volley
         Volley.newRequestQueue(this).add(volleyMultipartRequest);
     }
+    /*
     private void searchAccount(final String email){
         //our custom volley request
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.GET, EndPoints.UPLOAD_URL+"/user/all",
@@ -1013,6 +1049,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //adding the request to volley
         Volley.newRequestQueue(this).add(volleyMultipartRequest);
     }
+    */
     private void searchFacebookAccount(final String email){
         //our custom volley request
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.GET, EndPoints.UPLOAD_URL+"/user/all",
@@ -1029,7 +1066,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 JSONObject objData=obj.getJSONObject(i);
                                 if(objData.getString("email").equals(email)){
                                     emailExist = true;
-                                    User user = new User(Integer.parseInt(objData.getString("id")), objData.getString("u_id"), objData.getString("nom"), objData.getString("prenom"), objData.getString("email"), objData.getString("phone"), objData.getString("profile_pic"));
+                                    User user = new User(Long.parseLong(objData.getString("id")), objData.getString("u_id"), objData.getString("nom"), objData.getString("prenom"), objData.getString("email"), objData.getString("phone"), objData.getString("profile_pic"));
                                     SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
                                 } else {
 
@@ -1086,38 +1123,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private void searchEmailAccount(final String email, final String password){
         //our custom volley request
-        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.GET, EndPoints.UPLOAD_URL+"/user/all",
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, EndPoints.UPLOAD_URL+"/login",
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
+                        JSONObject objData = null;
                         try {
-                            JSONArray obj = new JSONArray(new String(response.data));
-                            int objLength = obj.length();
-
-                            for (int i = 0; i < objLength; i++)
-                            {
-                                JSONObject objData=obj.getJSONObject(i);
-                                if(objData.getString("email").equals(email) && password.equals(objData.getString("password"))){
+                            objData = new JSONObject(new String(response.data));
 
 
-                                    User user = new User(Integer.parseInt(objData.getString("id")), objData.getString("u_id"), objData.getString("nom"), objData.getString("prenom"), objData.getString("email"), objData.getString("phone"), objData.getString("profile_pic"));
+
+                                if(objData.getString("error").equals(false)){
+
+
+                                    User user = new User(Long.parseLong(objData.getString("id")), objData.getString("u_id"), objData.getString("nom"), objData.getString("prenom"), objData.getString("email"), objData.getString("phone"), objData.getString("profile_pic"));
                                     SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
 
                                     Intent startTimeline = new Intent(LoginActivity.this, TimelineActivity.class);
                                     startActivity(startTimeline);
                                     finish();
 
-                                } else if(!objData.getString("email").equals(email)){
-                                    displayToast("L'utilisateur n'existe pas.");
+                                } else if(objData.getString("error").equals(true)){
+                                    displayToast("L'utilisateur n'existe pas."+objData.getString("message"));
 
-                                } else if(!password.equals(objData.getString("password"))) {
-
-                                displayToast("Le mot de passe est incorrect.");
+                                }
 
 
-                            }
-
-                            }
 
 
 
@@ -1143,15 +1174,104 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         displayToast("Authentication failed."+error.getMessage());
                     }
                 }) {
-
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("email", email);
+                params.put("password", password);
+                return params;
+            }
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                String credentials = "admin:admin";
+                String credentials = "cent:capp7622argent";
                 String auth = "Basic "
                         + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-                headers.put("Content-Type", "application/json");
+                //headers.put("Content-Type", "application/json");
+                headers.put("Authorization", auth);
+                return headers;
+            }
+
+        };
+
+        //adding the request to volley
+        Volley.newRequestQueue(this).add(volleyMultipartRequest);
+    }
+    private void searchEmailAccountWithUid(final GoogleSignInAccount account){
+        //our custom volley request
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, EndPoints.UPLOAD_URL+"/login/social",
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        JSONObject objData = null;
+                        try {
+                            objData = new JSONObject(new String(response.data));
+
+
+
+                            if(objData.getString("error").equals("0")){
+
+
+                                User user = new User(Long.parseLong(objData.getString("id")), objData.getString("u_id"), objData.getString("nom"), objData.getString("prenom"), objData.getString("email"), objData.getString("phone"), objData.getString("profile_pic"));
+                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+
+                                //Intent startTimeline = new Intent(LoginActivity.this, TimelineActivity.class);
+                                //startActivity(startTimeline);
+                                //finish();
+                                updateGoogle(userAccount,user);
+
+                            } else if(objData.getString("error").equals("1")){
+                                displayToast("Un problème est survenu."+objData.getString("message"));
+
+                            }else if(objData.getString("error").equals("2")){
+                                displayToast("L'utilisateur n'existe pas.  Connectez vous avec le mot de passe."+objData.getString("message"));
+
+                            }else if(objData.getString("error").equals("3")){
+                                displayToast("L'utilisateur n'existe pas."+objData.getString("message"));
+                                User user = new User(Long.parseLong(objData.getString("id")), objData.getString("u_id"), objData.getString("nom"), objData.getString("prenom"), objData.getString("email"), objData.getString("phone"), objData.getString("profile_pic"));
+                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+
+                                tryRegisterGoogleAccount(account.getId(),account.getGivenName(),account.getFamilyName(),"",account.getEmail(),String.valueOf(account.getPhotoUrl()));
+
+
+                            }
+
+
+
+                        } catch (JSONException e) {
+                            //Dismiss the dialog
+
+                            displayToast("Recherche impossible."+e.getMessage());
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //Dismiss the dialog
+
+
+                        displayToast("Authentication failed."+error.getMessage());
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("email", account.getEmail());
+                params.put("u_id", account.getId());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                String credentials = "cent:capp7622argent";
+                String auth = "Basic "
+                        + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+                //headers.put("Content-Type", "application/json");
                 headers.put("Authorization", auth);
                 return headers;
             }
@@ -1181,7 +1301,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         snackbar.show();
     }
 
-
     private boolean isConnected(){
         ConnectivityManager cm =
                 (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1192,8 +1311,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         return isConnected;
 
-
     }
 
 }
-

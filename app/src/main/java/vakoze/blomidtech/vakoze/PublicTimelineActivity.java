@@ -1,7 +1,6 @@
 package vakoze.blomidtech.vakoze;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,9 +12,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import vakoze.blomidtech.vakoze.fragments.PublicCommunauteFragment;
+import vakoze.blomidtech.vakoze.fragments.PublicNotificationsFragment;
+import vakoze.blomidtech.vakoze.fragments.PublicProfilFragment;
+import vakoze.blomidtech.vakoze.fragments.PublicVideoFragment;
 import vakoze.blomidtech.vakoze.models.Video;
 
 public class PublicTimelineActivity extends AppCompatActivity implements PublicVideoFragment.OnListFragmentInteractionListener,
@@ -23,18 +24,8 @@ public class PublicTimelineActivity extends AppCompatActivity implements PublicV
         PublicCommunauteFragment.OnFragmentInteractionListener,
         PublicNotificationsFragment.OnFragmentInteractionListener {
 
-    private TextView mTextMessage;
-    private GoogleSignInClient mGoogleSignInClient;
 
-    private String userChoosenTask;
-    private int SELECT_FILE = 0;
-
-    private Uri fileUri; // file url to store image/video
-    // Camera activity request codes
-    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
-    private Cursor cursor = null;
-    private int idx = 0;
+    ActionBar actionBar;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -61,15 +52,19 @@ public class PublicTimelineActivity extends AppCompatActivity implements PublicV
             //CharSequence title = getString(R.string.app_name);
             if (id == R.id.actualite) {
                 fragment = new PublicVideoFragment();
+                actionBar.show();
             } else if (id == R.id.profil) {
                 fragment = new PublicProfilFragment();
+                actionBar.hide();
             } else if (id == R.id.add_video_home) {
                 //fragment = new AjoutVideoFragment();
                 selectImage();
             } else if (id == R.id.communaute) {
                 fragment = new PublicCommunauteFragment();
+                actionBar.hide();
             } else if (id == R.id.notifications) {
                 fragment = new PublicNotificationsFragment();
+                actionBar.hide();
             }
             if (fragment != null) {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -92,15 +87,14 @@ public class PublicTimelineActivity extends AppCompatActivity implements PublicV
         setContentView(R.layout.activity_timeline);
         // Initialize Firebase Auth
         View decorView = getWindow().getDecorView();
-// Hide the status bar.
+        // Hide the status bar.
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
-// Remember that you should never show the action bar if the
-// status bar is hidden, so hide that too if necessary.
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        // Remember that you should never show the action bar if the
+        // status bar is hidden, so hide that too if necessary.
+        actionBar = getSupportActionBar();
+        //actionBar.hide();
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -132,6 +126,5 @@ public class PublicTimelineActivity extends AppCompatActivity implements PublicV
         startActivity(intent);
 
     }
-
 
 }

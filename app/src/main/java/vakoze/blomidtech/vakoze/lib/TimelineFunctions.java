@@ -73,7 +73,7 @@ public class TimelineFunctions {
                                 if(id == Long.parseLong(UserId)){
 
 
-                                    user[0] = new User(Integer.parseInt(objData.getString("id")), objData.getString("u_id"), objData.getString("nom"), objData.getString("prenom"), objData.getString("email"), objData.getString("phone"), objData.getString("profile_pic"));
+                                    user[0] = new User(Long.parseLong(objData.getString("id")), objData.getString("u_id"), objData.getString("nom"), objData.getString("prenom"), objData.getString("email"), objData.getString("phone"), objData.getString("profile_pic"));
 
 
                                 }

@@ -13,4 +13,8 @@
     <string name="nomVideo">Titre de la vidéo</string>
     <string name="tagsVideo">Descriptif</string>
     <string name="error_incorrect_email">Cet Email est incorrect</string>
+    <string name="duration">00:00</string>
+    <string name="chat">Chat</string>
+    <string name="todo">TODO</string>
+    <string name="envoyer">Envoyer</string>
 </resources>

@@ -3,10 +3,7 @@ package vakoze.blomidtech.vakoze;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
-import android.os.RecoverySystem;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +18,8 @@ import android.widget.VideoView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+
+import vakoze.blomidtech.vakoze.save.MainActivity;
 
 public class UploadActivity extends AppCompatActivity {
 

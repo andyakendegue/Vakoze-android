@@ -20,10 +20,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -121,20 +125,15 @@ public class InscriptionActivity extends AppCompatActivity {
         UUID Uid = UUID.randomUUID();
 
         String UId, nom, prenom, phone, password, confirmPassword, email;
-        Date date_ajout, date_modif;
 
 
         UId = Uid.toString();
         nom = nomEdit.getText().toString();
         prenom = prenomEdit.getText().toString();
+        phone  = "";
         confirmPassword = confirmPasswordEdit.getText().toString();
         email = emailEdit.getText().toString();
         password = passwordEdit.getText().toString();
-
-
-        Date currentTime = Calendar.getInstance().getTime();
-        date_ajout = currentTime;
-        date_modif = currentTime;
 
         boolean cancel = false;
         View focusView = null;
@@ -180,29 +179,30 @@ public class InscriptionActivity extends AppCompatActivity {
             // perform the user login attempt.
             progressDialog = new ProgressDialog(this);
             // Setting Title
-            progressDialog.setTitle("Enregistrement de vos informations");
+            progressDialog.setTitle("Inscription en cours");
             // Setting Message
-            progressDialog.setMessage("Chargement...");
+            progressDialog.setMessage("Patientez...");
             // Progress Dialog Style Horizontal
             //progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             // Progress Dialog Style Spinner
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             // Progress Dialog Max Value
 
-            progressDialog.setMax(100);
+            //progressDialog.setMax(100);
             // Fetching max value
-            progressDialog.getMax();
+            //progressDialog.getMax();
             // Fetching current progress
-            progressDialog.getProgress();
+            //progressDialog.getProgress();
             // Incremented By Value 2
             //progressDialog.incrementProgressBy(2);
             // Cannot Cancel Progress Dialog
             progressDialog.setCancelable(false);
             progressDialog.show();
-            searchEmailAccount(UId, nom, prenom, /* phone ,*/ email, password);
+
+            uploadTOServer( UId, nom, prenom,  phone , email, password);
 
             //Toast.makeText(getApplicationContext(), "Enregistrement réussi"+tags+ UId+ nom+ prenom+ /* phone +*/ email+ password, Toast.LENGTH_LONG).show();
-            progressDialog.dismiss();
+
 
         }
     }
@@ -231,33 +231,129 @@ public class InscriptionActivity extends AppCompatActivity {
 
 
 
-    private void uploadTOServer( final String Uid, final String nom, final String prenom, /* String final phone, */ final String email, final String password){
+    private void uploadTOServer( final String Uid, final String nom, final String prenom,  final String phone,  final String email, final String password){
         //our custom volley request
-        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.GET, EndPoints.UPLOAD_URL+"/user/add?u_id="+Uid+"&nom="+nom+"&prenom="+prenom+"&password="+password+"&profile_pic=empty&email="+email,
-                new Response.Listener<NetworkResponse>() {
+        /*
+        Map<String, String> jsonParams = new HashMap<String, String>();
+        jsonParams.put("u_id", Uid);
+        jsonParams.put("nom", nom);
+        jsonParams.put("prenom", prenom);
+        jsonParams.put("phone", phone);
+        jsonParams.put("email", email);
+        jsonParams.put("profile_pic", password);
+        jsonParams.put("password", password);
+
+        JsonObjectRequest myRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                EndPoints.UPLOAD_URL+"/user/add",
+                new JSONObject(jsonParams),
+
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(NetworkResponse response) {
-                        String obj = new String(response.data);
+                    public void onResponse(JSONObject response) {
+                        progressDialog.dismiss();
+                        try {
 
 
-                        if(obj.equalsIgnoreCase("saved")) {
-                            //Dismiss the dialog
-                            progressDialog.dismiss();
-                            User user = new User(1,Uid,nom,prenom,email,"", "");
-                            SharedPrefManager.getInstance(getApplicationContext()).clear();
-                            SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                            if (response.getString("error").equals("0")) {
+                                //Dismiss the dialog
+                                User user = new User(1,Uid,nom,prenom,email,"", "");
+                                SharedPrefManager.getInstance(getApplicationContext()).clear();
+                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                                displayToast("Enregistrement réussi" +nom);
+                                Intent timeline = new Intent(InscriptionActivity.this, TimelineActivity.class);
+                                //startActivity(timeline);
+                            } else if(response.getString("error").equals("1")){
+                                displayToast("L'enregistrement a echoué");
+                            } else if(response.getString("error").equals("2")){
+                                displayToast("L'utilisateur existe déjà");
+                            } else {
+                                displayToast("résultat inconnu"+response.getString("message"));
+                            }
 
-                            displayToast("Enregistrement réussi");
-                            Intent timeline = new Intent(InscriptionActivity.this, TimelineActivity.class);
-                            startActivity(timeline);
-
-                        } else {
-                            progressDialog.dismiss();
-
-                            displayToast("L'enregistrement a echoué");
-
-
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            displayToast("une erreur s'est produite : "+e.getMessage() + response);
                         }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        Snackbar snackbar = Snackbar
+                                .make(linearLayout, "Il ya eu un problème lors de votre enregistrement" + error.getMessage(), Snackbar.LENGTH_LONG)
+                                .setAction("Reessayer", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        attemptLogin();
+                                    }
+                                });
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+                        snackbar.show();
+
+                    }
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                String credentials = "cent:capp7622argent";
+                String auth = "Basic "
+                        + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Authorization", auth);
+                return headers;
+            }
+        };
+        //MyApplication.getInstance().addToRequestQueue(myRequest, "tag");
+        //Adding the string request to the queue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(myRequest);
+        */
+
+        StringRequest volleyMultipartRequest = new StringRequest(Request.Method.POST, EndPoints.UPLOAD_URL+"/user/add",
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        progressDialog.dismiss();
+
+
+                        JSONObject objData = null;
+                        try {
+
+                                objData = new JSONObject(response);
+                                if (objData.getString("error").equals("0")) {
+                                    //Dismiss the dialog
+                                    User user = new User((long) 1,Uid,nom,prenom,email,"", "");
+                                    SharedPrefManager.getInstance(getApplicationContext()).clear();
+                                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                                    displayToast("Enregistrement réussi");
+                                    Intent timeline = new Intent(InscriptionActivity.this, TimelineActivity.class);
+                                    startActivity(timeline);
+                                } else if(objData.getString("error").equals("1")){
+                                    displayToast("L'enregistrement a echoué");
+                                } else if(objData.getString("error").equals("2")){
+                                    displayToast("L'utilisateur existe déjà");
+                                } else {
+                                    displayToast("résultat inconnu"+objData.getString("message"));
+                                }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            displayToast("une erreur s'est produite : "+e.getMessage() + objData);
+                        }
+
+
+
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -291,25 +387,27 @@ public class InscriptionActivity extends AppCompatActivity {
             * here we have only one parameter with the image
             * which is tags
             * */
+
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("u_id", Uid);
                 params.put("nom", nom);
                 params.put("prenom", prenom);
-                //params.put("phone", phone);
+                params.put("phone", phone);
                 params.put("email", email);
+                params.put("profile_pic", "");
                 params.put("password", password);
-                params.put("profile_pic", password);
                 return params;
             }
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                String credentials = "admin:admin";
+                String credentials = "cent:capp7622argent";
                 String auth = "Basic "
                         + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-                headers.put("Content-Type", "application/json");
+                //headers.put("Content-Type", "multipart/form-data");
+                //headers.put("Content-Type", "multipart/form-data");
                 headers.put("Authorization", auth);
                 return headers;
             }
@@ -318,103 +416,18 @@ public class InscriptionActivity extends AppCompatActivity {
 
         //adding the request to volley
         Volley.newRequestQueue(this).add(volleyMultipartRequest);
+       // Volley.getInstance().addToRequestQueue(jsonObjReq);
+//Set a retry policy in case of SocketTimeout & ConnectionTimeout Exceptions.
+//Volley does retry for you if you have specified the policy.
+        volleyMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(10000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+
 
     }
-    private void updateUI(String Uid, String nom, String prenom, String email, String password) {
-        // Check for existing Google Sign In account, if the user is already signed in
 
 
-        if(Uid != null){
-
-            Intent timeline = new Intent(InscriptionActivity.this, TimelineActivity.class);
-            //creating a new user object
-            //storing the user in shared preferences
-            SharedPrefManager.getInstance(getApplicationContext()).clear();
-            User user = new User(1,Uid,nom,prenom, email,"", "");
-            SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-
-            startActivity(timeline);
-            finish();
-
-
-        }
-    }
-
-    private void searchEmailAccount(final String UId, final String nom, final String prenom, final String email, final String password){
-        //our custom volley request
-        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.GET, EndPoints.UPLOAD_URL+"/user/all",
-                new Response.Listener<NetworkResponse>() {
-                    @Override
-                    public void onResponse(NetworkResponse response) {
-                        try {
-                            JSONArray obj = new JSONArray(new String(response.data));
-                            int objLength = obj.length();
-
-                            for (int i = 0; i < objLength; i++)
-                            {
-                                JSONObject objData=obj.getJSONObject(i);
-                                if(objData.getString("email").equals(email) ){
-
-
-                                    /*User user = new User(Integer.parseInt(objData.getString("id")), objData.getString("u_id"), objData.getString("nom"), objData.getString("prenom"), objData.getString("email"), objData.getString("phone"), objData.getString("profile_pic"));
-                                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-
-                                    Intent startTimeline = new Intent(InscriptionActivity.this, TimelineActivity.class);
-                                    startActivity(startTimeline);
-                                    finish();
-                                    */
-                                    displayToast("Un utilisateur avec cette adresse Email existe déjà.");
-
-                                } else if(!objData.getString("email").equals(email)){
-                                    displayToast("L'utilisateur n'existe pas.");
-                                    uploadTOServer( UId, nom, prenom, /* phone ,*/ email, password);
-
-                                }
-
-                            }
-
-
-
-
-
-
-
-                        } catch (JSONException e) {
-                            //Dismiss the dialog
-
-                            displayToast("Recherche impossible."+e.getMessage());
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //Dismiss the dialog
-
-
-                        displayToast("Authentication failed."+error.getMessage());
-                    }
-                }) {
-
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String credentials = "admin:admin";
-                String auth = "Basic "
-                        + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-                headers.put("Content-Type", "application/json");
-                headers.put("Authorization", auth);
-                return headers;
-            }
-
-        };
-
-        //adding the request to volley
-        Volley.newRequestQueue(this).add(volleyMultipartRequest);
-    }
     public void displayToast(String message){
         Snackbar snackbar = Snackbar
                 .make(linearLayout, message, Snackbar.LENGTH_LONG)
@@ -433,8 +446,6 @@ public class InscriptionActivity extends AppCompatActivity {
         textView.setTextColor(Color.YELLOW);
         snackbar.show();
     }
-
-
 
     private boolean isConnected(){
         ConnectivityManager cm =

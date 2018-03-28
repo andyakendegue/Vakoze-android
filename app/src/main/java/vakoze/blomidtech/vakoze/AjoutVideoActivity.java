@@ -33,9 +33,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,6 +50,7 @@ import vakoze.blomidtech.vakoze.lib.EndPoints;
 import vakoze.blomidtech.vakoze.lib.SharedPrefManager;
 import vakoze.blomidtech.vakoze.lib.VolleyMultipartRequest;
 import vakoze.blomidtech.vakoze.models.User;
+import vakoze.blomidtech.vakoze.save.MainActivity;
 
 
 public class AjoutVideoActivity extends AppCompatActivity {
@@ -106,7 +107,7 @@ public class AjoutVideoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ajout_video);
         ajout_video_activity = findViewById(R.id.ajout_video_activity);
         nomEdit = findViewById(R.id.nomVideo);
-        nomEdit.setText(receivedUri);
+
         tagsEdit = findViewById(R.id.tagsVideo);
         tagsEdit.setText(fileType);
 
@@ -114,7 +115,7 @@ public class AjoutVideoActivity extends AppCompatActivity {
         displayRecordedVideo = findViewById(R.id.video_display);
         Spinner categorieVideo = findViewById(R.id.categorieVideo);
         String[] arraySpinner = new String[] {
-                "1", "2", "3", "4", "5"
+                "Humour", "Politique", "Education", "Ecologie", "Amour"
         };
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, arraySpinner);
@@ -227,8 +228,8 @@ public class AjoutVideoActivity extends AppCompatActivity {
 
                 } else {
 
-                    new uploadVideoToServer(nom, tags, categories, receivedUri, user, AjoutVideoActivity.this).execute();
-                    //uploadMp4(nom, tags, categories);
+                    //new uploadVideoToServer(nom, tags, categories, receivedUri, user, AjoutVideoActivity.this).execute();
+                    uploadMp4(nom, tags, categories);
                 }
 
             }
@@ -240,7 +241,13 @@ public class AjoutVideoActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
+        outState.putSerializable("videoType", fileType);
+        outState.putSerializable("filePath", receivedUri);
+    }
 
 
     private void setVideo(Uri videoUri){
@@ -274,8 +281,9 @@ public class AjoutVideoActivity extends AppCompatActivity {
         private int mProgression = 0;
         String mNom, mTags, mCategories, mUri;
         byte[] videoToSend;
-        int userId;
+        Long userId;
         boolean retour = false;
+        String message;
         //getting the current user
         //User user = SharedPrefManager.getInstance(getActivity()).getUser();
 
@@ -308,131 +316,96 @@ public class AjoutVideoActivity extends AppCompatActivity {
         }
 
 
-
-
-
         @Override
         protected Boolean doInBackground(Void... voids) {
+            //our custom volley request
+            VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, EndPoints.UPLOAD_URL+"/video/add",
+                    new Response.Listener<NetworkResponse>() {
+                        @Override
+                        public void onResponse(NetworkResponse response) {
 
-            FFmpeg ffmpeg = FFmpeg.getInstance(AjoutVideoActivity.this);
-            try {
-                // to execute "ffmpeg -version" command you just need to pass "-version"
-                String cmd = "ffmpeg -i "+mUri;
-                ffmpeg.execute(new String[]{cmd}, new ExecuteBinaryResponseHandler() {
-
-                    @Override
-                    public void onStart() {}
-
-                    @Override
-                    public void onProgress(String message) {
-                        progressDialog.setMessage("Compression de la vidéo\n");
-                    }
-
-                    @Override
-                    public void onFailure(String message) {
-                        retour = false;
-                    }
-
-                    @Override
-                    public void onSuccess(String message) {
-                        //our custom volley request
-                        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, EndPoints.UPLOAD_URL+"/video/add",
-                                new Response.Listener<NetworkResponse>() {
-                                    @Override
-                                    public void onResponse(NetworkResponse response) {
-
-                                        //JSONObject obj = new JSONObject(new String(response.data));
-                                        String obj = new String(response.data);
-
-
-                                        if(!obj.equalsIgnoreCase("saved")) {
-                                            //Toast.makeText(getApplicationContext(), "Impossible d'enregistrer la vidéo", Toast.LENGTH_LONG).show();
-                                            //Dismiss the dialog
-                                            //progressDialog.dismiss();
-                                            retour = false;
-                                        } else {
-                                            //Dismiss the dialog
-                                            //progressDialog.dismiss();
-                                            //Toast.makeText(getApplicationContext(), "Enregistrement réussi", Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(AjoutVideoActivity.this,LoginActivity.class);
-                                            startActivity(intent);
-                                            finish();
-                                            retour = true;
-                                        }
-
-
-
-                                    }
-                                },
-                                new Response.ErrorListener() {
-
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        //Dismiss the dialog
-                                        //progressDialog.dismiss();
-                                        //Toast.makeText(getApplicationContext(), "Erreur reponse serveur "+error, Toast.LENGTH_LONG).show();
-                                        retour = false;
-
-                                    }
-                                }) {
-
-                            /*
-                            * If you want to add more parameters with the image
-                            * you can do it here
-                            * here we have only one parameter with the image
-                            * which is tags
-                            * */
-                            @Override
-                            protected Map<String, String> getParams() throws AuthFailureError {
-                                Map<String, String> params = new HashMap<>();
-                                params.put("user_id", String.valueOf(userId));
-                                params.put("tags", mTags);
-                                params.put("nom", mNom);
-                                params.put("categorie", mCategories);
-                                return params;
+                            JSONObject obj = null;
+                            try {
+                                obj= new JSONObject(new String(response.data));
+                                if(!obj.getBoolean("error")){
+                                    Intent intent = new Intent(AjoutVideoActivity.this,LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    retour = true;
+                                } else {
+                                    message = "Server"+obj.getString("message");
+                                    retour = false;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                message = "Catch"+e.getMessage();
+                                retour = false;
                             }
+                            //String obj = new String(response.data);
 
-                            /*
-                            * Here we are passing image by renaming it with a unique name
-                            * */
-                            @Override
-                            protected Map<String, DataPart> getByteData() {
-                                Map<String, DataPart> params = new HashMap<>();
-                                long imagename = System.currentTimeMillis();
-                                final DataPart file = new DataPart(imagename + ".mp4", videoToSend);
-                                params.put("file", file);
-                                return params;
-                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
 
-                            @Override
-                            public Map<String, String> getHeaders() throws AuthFailureError {
-                                Map<String, String> headers = new HashMap<>();
-                                String credentials = "admin:admin";
-                                String auth = "Basic "
-                                        + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-                                //headers.put("Content-Type", "application/json");
-                                headers.put("Authorization", auth);
-                                return headers;
-                            }
-                        };
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //Dismiss the dialog
+                            //progressDialog.dismiss();
+                            //Toast.makeText(getApplicationContext(), "Erreur reponse serveur "+error, Toast.LENGTH_LONG).show();
+                            retour = false;
+                            message = "request"+error.getMessage();
 
-                        //adding the request to volley
-                        volleyMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
-                                0,
-                                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                        Volley.newRequestQueue(AjoutVideoActivity.this).add(volleyMultipartRequest);
-                    }
+                        }
+                    }) {
 
-                    @Override
-                    public void onFinish() {}
-                });
-            } catch (FFmpegCommandAlreadyRunningException e) {
-                retour = false;
-                // Handle if FFmpeg is already running
-            }
+                /*
+                * If you want to add more parameters with the image
+                * you can do it here
+                * here we have only one parameter with the image
+                * which is tags
+                * */
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("user_id", String.valueOf(userId));
+                    params.put("description", mTags);
+                    params.put("nom", mNom);
+                    params.put("categorie", mCategories);
+                    params.put("tags", mNom);
+                    params.put("type", "mp4");
+                    return params;
+                }
 
+                /*
+                * Here we are passing image by renaming it with a unique name
+                * */
+                @Override
+                protected Map<String, DataPart> getByteData() {
+                    Map<String, DataPart> params = new HashMap<>();
+                    long imagename = System.currentTimeMillis();
+                    final DataPart file = new DataPart(imagename + ".mp4", videoToSend);
+                    params.put("file", file);
+                    return params;
+                }
 
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    String credentials = "cent:capp7622argent";
+                    String auth = "Basic "
+                            + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+                    headers.put("Authorization", auth);
+                    return headers;
+                }
+            };
+
+            //adding the request to volley
+
+            Volley.newRequestQueue(AjoutVideoActivity.this).add(volleyMultipartRequest);
+            volleyMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    10000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
             return retour;
         }
@@ -452,7 +425,7 @@ public class AjoutVideoActivity extends AppCompatActivity {
 
                 else
 
-                    displayToast("Echec du téléchargement");
+                    displayToast("Echec du téléchargement"+message);
 
             }
 
@@ -505,14 +478,14 @@ public class AjoutVideoActivity extends AppCompatActivity {
     }
 
 
-    /*
+
     private void uploadMp4(final String nom, final String tags, final String categorie) {
 
         loadProgress();
 
         //getting the current user
         User user = SharedPrefManager.getInstance(AjoutVideoActivity.this).getUser();
-        final int userId = user.getId();
+        final Long userId = user.getId();
 
         final byte[] videoToSend = videoBytes(receivedUri);
 
@@ -524,12 +497,14 @@ public class AjoutVideoActivity extends AppCompatActivity {
                     public void onResponse(NetworkResponse response) {
 
                             //JSONObject obj = new JSONObject(new String(response.data));
+                        /*
                             String obj = new String(response.data);
 
 
                             if(!obj.equalsIgnoreCase("saved")) {
                                 Toast.makeText(getApplicationContext(), "Impossible d'enregistrer la vidéo", Toast.LENGTH_LONG).show();
                                 //Dismiss the dialog
+
                                 progressDialog.dismiss();
                             } else {
                                 //Dismiss the dialog
@@ -539,8 +514,26 @@ public class AjoutVideoActivity extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             }
+                            */
+                        JSONObject obj = null;
+                        progressDialog.dismiss();
+                        try {
+                            obj= new JSONObject(new String(response.data));
+                            if(!obj.getBoolean("error")){
+                                displayToast("Upload Réussi");
+                                Intent intent = new Intent(AjoutVideoActivity.this,LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                displayToast("Upload Non Réussi :"+obj.getString("message"));
+                                Log.e("VakoError : Upload Non Réussi",obj.getString("message"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            displayToast("erreur"+e.getMessage());
+                            Log.e("VakoError : "+e.getMessage(),new String(response.data));
 
-
+                        }
 
                     }
                 },
@@ -550,8 +543,8 @@ public class AjoutVideoActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         //Dismiss the dialog
                         progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "Erreur reponse serveur "+error, Toast.LENGTH_LONG).show();
-
+                        displayToast("Upload Non Réussi"+error.getMessage());
+                        Log.e("VakoError : Volley Error",error.getMessage());
                     }
                 }) {
 
@@ -568,6 +561,8 @@ public class AjoutVideoActivity extends AppCompatActivity {
                 params.put("tags", tags);
                 params.put("nom", nom);
                 params.put("categorie", categorie);
+                params.put("description", tags);
+                params.put("type", "mp4");
                 return params;
             }
 
@@ -586,10 +581,10 @@ public class AjoutVideoActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                String credentials = "admin:admin";
+                String credentials = "cent:capp7622argent";
                 String auth = "Basic "
                         + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-                //headers.put("Content-Type", "application/json");
+                //headers.put("Content-Type", "multipart/form-data");
                 headers.put("Authorization", auth);
                 return headers;
             }
@@ -603,8 +598,6 @@ public class AjoutVideoActivity extends AppCompatActivity {
         Volley.newRequestQueue(this).add(volleyMultipartRequest);
     }
 
-    */
-
     private void loadProgress(){
         //getting the tag from the edittext
         //final String tags = editTextTags.getText().toString().trim();
@@ -614,19 +607,19 @@ public class AjoutVideoActivity extends AppCompatActivity {
         // Setting Message
         progressDialog.setMessage("Chargement...");
         // Progress Dialog Style Horizontal
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        //progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         // Progress Dialog Style Spinner
-        //progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         // Progress Dialog Max Value
-        progressDialog.setMax(100);
+        //progressDialog.setMax(100);
         // Fetching max value
-        progressDialog.getMax();
+        //progressDialog.getMax();
         // Fetching current progress
-        progressDialog.getProgress();
+       //progressDialog.getProgress();
         // Incremented By Value 2
-        progressDialog.incrementProgressBy(2);
+        //progressDialog.incrementProgressBy(2);
         // Cannot Cancel Progress Dialog
-        progressDialog.setCancelable(true);
+        progressDialog.setCancelable(false);
 
         progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 

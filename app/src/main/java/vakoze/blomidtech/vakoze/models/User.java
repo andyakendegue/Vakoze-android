@@ -8,11 +8,11 @@ import java.util.Date;
 
 public class User {
 
-    private int id;
+    private Long id;
     private String u_id, nom, prenom, phone, password, confirmPassword, email, profile_pic;
     private Date date_ajout, date_modif;
 
-    public User(int id, String u_id, String nom, String prenom, String email, String phone,  String profile_pic) {
+    public User(Long id, String u_id, String nom, String prenom, String email, String phone,  String profile_pic) {
         this.id = id;
         this.u_id = u_id;
         this.nom = nom;
@@ -26,11 +26,11 @@ public class User {
         this.date_modif = date_modif;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

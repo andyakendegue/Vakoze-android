@@ -55,7 +55,7 @@ public class TimelineAdapter extends BaseAdapter {
         final TextView mContentView;
         final VideoView mVideoView;
         mIdView = (TextView) convertView.findViewById(R.id.id);
-        mContentView = (TextView) convertView.findViewById(R.id.content);
+        mContentView = (TextView) convertView.findViewById(R.id.like);
         mVideoView = convertView.findViewById(R.id.videoTimeline);
         final Video video = videoItems.get(position);
 

@@ -5,10 +5,14 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.Display;
@@ -22,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -30,6 +35,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 
@@ -41,6 +47,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import vakoze.blomidtech.vakoze.fragments.RepostFragment;
+import vakoze.blomidtech.vakoze.fragments.ShareFragment;
 import vakoze.blomidtech.vakoze.lib.EndPoints;
 import vakoze.blomidtech.vakoze.lib.FullScreenMediaController;
 import vakoze.blomidtech.vakoze.lib.VolleyMultipartRequest;
@@ -48,7 +56,7 @@ import vakoze.blomidtech.vakoze.models.User;
 import vakoze.blomidtech.vakoze.models.Video;
 
 
-public class PublicBoxActivity extends AppCompatActivity {
+public class PublicBoxActivity extends AppCompatActivity implements RepostFragment.OnFragmentInteractionListener, ShareFragment.OnFragmentInteractionListener {
     private static final String TAG = PublicBoxActivity.class.getSimpleName();
     private Uri uri;
     private String pathToStoredVideo, nom , tags, categories;;
@@ -63,7 +71,6 @@ public class PublicBoxActivity extends AppCompatActivity {
     private String filePath = null;
     long totalSize = 0;
     private File sourceFile;
-    private LinearLayout ajout_video_activity;
     private Video videoInfo;
     private TextView userName, description_video, titre_video, duree_video;
     private ImageView userPic;
@@ -72,6 +79,7 @@ public class PublicBoxActivity extends AppCompatActivity {
     private View mProgressView;
     private View mBoxView;
     private User videoUser;
+    RelativeLayout layoutBox;
 
     @Override
     protected void onStart(){
@@ -89,33 +97,29 @@ public class PublicBoxActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_box);
-
+        layoutBox = findViewById(R.id.layout_box_activity);
         mBoxView = findViewById(R.id.box_layout);
         titre_video = findViewById(R.id.video_title);
+        description_video = findViewById(R.id.videoDescription);
         duree_video = findViewById(R.id.video_duration);
         mProgressView = findViewById(R.id.public_profile_progress);
         videoInfo = new Video();
         Bundle extras = getIntent().getExtras();
         if (savedInstanceState == null) {
-
             if(extras == null) {
                 receivedUri= null;
             } else {
-
                 receivedUri= extras.getString("source");
                 videoInfo.setSource(extras.getString("source"));
                 videoInfo.setUser_id(Long.parseLong(extras.getString("userId")));
                 videoInfo.setNom(extras.getString("nom"));
                 videoInfo.setTags(extras.getString("tags"));
                 videoInfo.setCategorie(extras.getString("categorie"));
+                videoInfo.setDescription(extras.getString("description"));
                 videoInfo.setId(Long.parseLong(extras.getString("id")));
                 videoInfo.setType(extras.getString("type"));
-
                 titre_video.setText(extras.getString("nom"));
-
-
-
-
+                description_video.setText(extras.getString("description"));
             }
         } else {
             receivedUri= (String) savedInstanceState.getSerializable("source");
@@ -124,20 +128,16 @@ public class PublicBoxActivity extends AppCompatActivity {
             videoInfo.setNom((String) savedInstanceState.getSerializable("nom"));
             videoInfo.setTags((String) savedInstanceState.getSerializable("tags"));
             videoInfo.setCategorie((String) savedInstanceState.getSerializable("categorie"));
+            videoInfo.setDescription((String) savedInstanceState.getSerializable("description"));
             videoInfo.setId(Long.parseLong((String) savedInstanceState.getSerializable("id")));
             videoInfo.setType((String) savedInstanceState.getSerializable("type"));
             titre_video.setText((String) savedInstanceState.getSerializable("nom"));
-
-             }
-
-
+            description_video.setText((String) savedInstanceState.getSerializable("description"));
+        }
 
         userName = findViewById(R.id.userName);
         //
         userPic = findViewById(R.id.userPic);
-
-
-        ajout_video_activity = findViewById(R.id.ajout_video_activity);
 
         String fullScreen =  getIntent().getStringExtra("fullScreenInd");
         if("y".equals(fullScreen)){
@@ -145,24 +145,18 @@ public class PublicBoxActivity extends AppCompatActivity {
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
             getSupportActionBar().hide();
         }
-
-
         displayRecordedVideo = findViewById(R.id.video_display);
-
-
         //displayRecordedVideo.setVideoPath(receivedUri);
         displayRecordedVideo.setVideoURI(Uri.parse("http://"+receivedUri));
         //displayRecordedVideo.setUp(receivedUri,JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, receivedUri.substring(receivedUri.lastIndexOf("/")+1));
         displayRecordedVideo.seekTo(100);
         MediaController mediaController = new FullScreenMediaController(this);
         mediaController.setAnchorView(displayRecordedVideo);
-
         if(isLandScape()){
             mediaController = new FullScreenMediaController(this);
         }else {
             mediaController = new MediaController(this);
         }
-
         displayRecordedVideo.setMediaController(mediaController);
         displayRecordedVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener()  {
             @Override
@@ -248,9 +242,26 @@ public class PublicBoxActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(PublicBoxActivity.this, LoginActivity.class);
-
+                /*Intent i = new Intent(PublicBoxActivity.this, LoginActivity.class);
                 startActivity(i);
+                */
+
+                Intent i = new Intent(PublicBoxActivity.this, LoginActivity.class);
+                startActivity(i);
+                /*
+                Bundle args = new Bundle();
+                args.putString("source", videoInfo.getSource());
+                args.putLong("user_id", videoInfo.getUser_id());
+                args.putString("nom", videoInfo.getNom());
+                args.putString("tags", videoInfo.getTags());
+                args.putString("categorie", videoInfo.getCategorie());
+                args.putLong("id", videoInfo.getId());
+                args.putString("type", videoInfo.getType());
+
+                DialogFragment newFragment = new ShareFragment();
+                newFragment.setArguments(args);
+                newFragment.show(getSupportFragmentManager(), "repost");
+                */
 
 
             }
@@ -262,15 +273,40 @@ public class PublicBoxActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent i = new Intent(PublicBoxActivity.this, LoginActivity.class);
-
                 startActivity(i);
+                /*
+                Bundle args = new Bundle();
+                args.putString("source", videoInfo.getSource());
+                args.putLong("user_id", videoInfo.getUser_id());
+                args.putString("nom", videoInfo.getNom());
+                args.putString("tags", videoInfo.getTags());
+                args.putString("categorie", videoInfo.getCategorie());
+                args.putLong("id", videoInfo.getId());
+                args.putString("type", videoInfo.getType());
+
+                DialogFragment newFragment = new RepostFragment();
+                newFragment.setArguments(args);
+                newFragment.show(getSupportFragmentManager(), "repost");
+                */
 
             }
         });
 
 
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
+        outState.putSerializable("source", videoInfo.getSource());
+        outState.putSerializable("userId", videoInfo.getUser_id());
+        outState.putSerializable("nom", videoInfo.getNom());
+        outState.putSerializable("tags", videoInfo.getTags());
+        outState.putSerializable("categorie", videoInfo.getCategorie());
+        outState.putSerializable("description", videoInfo.getDescription());
+        outState.putSerializable("id", videoInfo.getId());
+        outState.putSerializable("type", videoInfo.getType());
     }
     private boolean isLandScape(){
         Display display = ((WindowManager) getSystemService(WINDOW_SERVICE))
@@ -323,16 +359,14 @@ public class PublicBoxActivity extends AppCompatActivity {
     public User searchUser(final String UserId){
         final User[] user = new User[1];
 
-
-
         //user = new User();
 
         //our custom volley request
-        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.GET, EndPoints.UPLOAD_URL+"/user/all",
-                new Response.Listener<NetworkResponse>() {
+        JsonObjectRequest volleyMultipartRequest = new JsonObjectRequest(Request.Method.GET,  EndPoints.UPLOAD_URL+"/user/"+UserId, null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(NetworkResponse response) {
-                        try {
+                    public void onResponse(JSONObject response) {
+                        try {/*
                             JSONArray obj = new JSONArray(new String(response.data));
                             int objLength = obj.length();
 
@@ -349,29 +383,34 @@ public class PublicBoxActivity extends AppCompatActivity {
                                 }
 
                             }
+                            */
 
-                            userName.setText(user[0].getNom());
+                            if(response.getString("user")!=null){
+                                JSONObject obj = new JSONObject(response.getString("user"));
 
-        if(user[0].getProfile_pic()!=null||!user[0].getProfile_pic().isEmpty()){
-            Glide.with(PublicBoxActivity.this)
-                    .load(user[0].getProfile_pic())
-                    //.fitCenter()
-                    .into(userPic);
-        } else {
-            userPic.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
-        }
+                                user[0] = new User(Long.parseLong(obj.getString("id")), obj.getString("u_id"), obj.getString("nom"), obj.getString("prenom"), obj.getString("email"), obj.getString("phone"), obj.getString("profile_pic"));
+
+                                userName.setText(user[0].getNom());
+
+                                if(user[0].getProfile_pic()!=null||!user[0].getProfile_pic().isEmpty()){
+                                    Glide.with(PublicBoxActivity.this)
+                                            .load(user[0].getProfile_pic())
+                                            //.fitCenter()
+                                            .into(userPic);
+                                } else {
+                                    userPic.setImageResource(R.drawable.profile_pic);
+                                }
+
+                            }
 
 
                             showProgress(false);
-
-
 
                         } catch (JSONException e) {
                             //Dismiss the dialog
                             showProgress(false);
-
-
                             e.printStackTrace();
+                            displayToast(layoutBox, "VakoError: JsonException Error - "+e.getMessage());
 
                         }
                     }
@@ -381,19 +420,16 @@ public class PublicBoxActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         showProgress(false);
+                        displayToast(layoutBox, "VakoError: Response Error - "+error.getMessage());
                         //Dismiss the dialog
-
 
                     }
                 }) {
 
-
-
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                String credentials = "admin:admin";
+                String credentials = "cent:capp7622argent";
                 String auth = "Basic "
                         + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
                 headers.put("Content-Type", "application/json");
@@ -415,6 +451,28 @@ public class PublicBoxActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    public void displayToast(View view, String message){
+        Snackbar snackbar = Snackbar
+                .make(view, message, Snackbar.LENGTH_LONG)
+                /*.setAction("Reessayer", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                buttonClicked = "login";
+                                attemptLogin();
+                            }
+                        })*/;
+        // Changing message text color
+        //snackbar.setActionTextColor(Color.RED);
+        // Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
+    }
 
 }
