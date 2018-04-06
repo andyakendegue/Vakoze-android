@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-    tools:context="vakoze.blomidtech.vakoze.fragments.FilterListFragment"
-    android:name="vakoze.blomidtech.vakoze.fragments.FilterListFragment">
+    tools:context="com.vakoze.fragments.FilterListFragment"
+    android:name="com.vakoze.fragments.FilterListFragment">
 
 
     <android.support.v7.widget.RecyclerView

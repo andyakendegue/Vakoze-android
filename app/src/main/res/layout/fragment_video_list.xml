@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:name="com.vakoze.videoFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:name="vakoze.blomidtech.vakoze.videoFragment"
-    tools:context="vakoze.blomidtech.vakoze.fragments.videoFragment">
+    android:background="@color/cardview_light_background"
+    tools:context="com.vakoze.fragments.videoFragment">
 
     <ProgressBar
         android:id="@+id/videoListProgress"
@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:visibility="visible" />
+
     <android.support.v7.widget.RecyclerView
 
         android:id="@+id/list"

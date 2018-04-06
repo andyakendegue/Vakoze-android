@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/inscription_activity"
-    tools:context="vakoze.blomidtech.vakoze.InscriptionActivity">
+    tools:context="com.vakoze.InscriptionActivity">
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
@@ -80,6 +80,18 @@
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/phoneEditInscription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Numéro de Téléphone"
+                    android:inputType="phone" />
+            </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

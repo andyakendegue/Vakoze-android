@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/ajout_video_activity"
-    tools:context="vakoze.blomidtech.vakoze.AjoutVideoActivity">
+    tools:context="com.vakoze.AjoutVideoActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -4,8 +4,8 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-android:name="vakoze.blomidtech.vakoze.MesVideosFragment"
-tools:context="vakoze.blomidtech.vakoze.fragments.MesVideosFragment">
+android:name="com.vakoze.MesVideosFragment"
+tools:context="com.vakoze.fragments.MesVideosFragment">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mesVideosList"
         android:layout_width="match_parent"

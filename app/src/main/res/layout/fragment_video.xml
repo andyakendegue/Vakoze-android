@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/video_list_fragment"
-    android:layout_width="180dp"
-    android:layout_height="150dp"
-    android:layout_marginTop="20dp"
-    android:orientation="horizontal">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    app:cardBackgroundColor="@color/cardview_dark_background"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="4dp">
 
-    <VideoView
-        android:id="@+id/videoTimeline"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:clickable="true"
-        android:focusable="true" />
+    <RelativeLayout
+        android:id="@+id/video_list_fragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:padding="5dp">
 
-    <!--
+        <VideoView
+            android:id="@+id/videoTimeline"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!--
     <com.dekoservidoni.omfm.OneMoreFabMenu
         android:id="@+id/fab"
         android:layout_width="24dp"
@@ -37,44 +46,44 @@
         app:size_secondary_buttons="@integer/omfm_fab_size_mini" />
         -->
 
-    <TextView
-        android:id="@+id/id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/like"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:gravity="center"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/like"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/white" />
 
-    <TextView
-        android:id="@+id/like"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="false"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:gravity="center"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="false"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/white" />
 
-    <ProgressBar
-        android:id="@+id/public_video_progress"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerInParent="true"
-        android:clickable="false"
+        <ProgressBar
+            android:id="@+id/public_video_progress"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:clickable="false"
 
-        android:focusable="false"
-        android:visibility="visible" />
+            android:focusable="false"
+            android:visibility="visible" />
 
 
-
-</RelativeLayout>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
