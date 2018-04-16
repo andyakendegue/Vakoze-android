@@ -10,7 +10,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="com.vakoze.MessengerActivity">
+        tools:context="com.vakoze.chatFirebase.MessengerActivity">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -40,16 +40,39 @@
                 />
         </android.support.design.widget.TextInputLayout>
 
-        <ListView
+    <ListView
+        android:id="@+id/list_of_messages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fab"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="false"
+        android:layout_below="@+id/userBox"
+        android:layout_marginBottom="16dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="16dp" />
+
+    <LinearLayout
+        android:id="@+id/userBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/picUser"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="5dp" />
+
+        <TextView
+            android:id="@+id/nameUser"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_above="@id/fab"
-            android:dividerHeight="16dp"
-            android:divider="@android:color/transparent"
-            android:id="@+id/list_of_messages"
-            android:layout_marginBottom="16dp"
-            android:layout_alignParentLeft="true" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:textStyle="bold"></TextView>
+    </LinearLayout>
     </RelativeLayout>
 

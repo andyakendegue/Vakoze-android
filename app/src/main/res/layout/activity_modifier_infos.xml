@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/modifier_layout"
-    tools:context="com.vakoze.ModifierInfosActivity">
+    tools:context="com.vakoze.private_profile.ModifierInfosActivity">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

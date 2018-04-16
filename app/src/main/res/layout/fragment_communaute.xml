@@ -7,22 +7,13 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <SearchView
-        android:id="@+id/communitySearch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:clickable="true"
-        android:closeIcon="@drawable/ic_clear"
-        android:goIcon="@drawable/ic_go_search"
-        android:iconifiedByDefault="false"
-        tools:targetApi="lollipop" android:focusable="true"/>
 
-    <ListView
-        android:id="@+id/groupList"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/userChatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/communitySearch" />
+        android:layout_alignParentTop="true"
+        tools:listitem="@layout/item_chat" />
 
     <Button
         android:id="@+id/chatButtonTest"
@@ -36,7 +27,8 @@
         android:layout_marginTop="60dp"
         android:gravity="center"
         android:text="@string/no_messages_pending"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:id="@+id/no_message"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabCommunaute"

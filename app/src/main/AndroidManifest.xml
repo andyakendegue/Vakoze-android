@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.vakoze">
+
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -15,15 +16,16 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="@xml/vakoze_backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:largeHeap="true">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
@@ -34,7 +36,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignupActivity"
+            android:name=".authentication.SignupActivity"
             android:parentActivityName=".StartActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -44,16 +46,16 @@
         </activity>
         <activity
             android:name=".InscriptionActivity"
-            android:parentActivityName=".LoginActivity">
+            android:parentActivityName=".authentication.LoginActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".StartActivity"/>
+                android:value=".StartActivity" />
         </activity>
         <activity android:name=".StartActivity" />
         <activity
-            android:name=".ProfilActivity"
+            android:name=".private_profile.ProfilActivity"
             android:label="@string/title_activity_profil"
             android:parentActivityName=".TimelineActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -68,7 +70,7 @@
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AjoutVideoActivity"
+            android:name=".video.AjoutVideoActivity"
             android:parentActivityName=".save.MainActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -77,7 +79,7 @@
                 android:value=".save.MainActivity" />
         </activity>
         <activity
-            android:name=".UploadActivity"
+            android:name=".video.UploadActivity"
             android:parentActivityName=".TimelineActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -100,11 +102,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".authentication.LoginActivity"
             android:label="@string/title_activity_login" />
-        <activity android:name=".MessengerActivity" />
+        <activity android:name=".chatFirebase.MessengerActivity" />
         <activity
-            android:name=".ModifierInfosActivity"
+            android:name=".private_profile.ModifierInfosActivity"
             android:parentActivityName=".TimelineActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -112,6 +114,58 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TimelineActivity" />
         </activity>
+        <activity
+            android:name=".private_profile.ModifyPasswordActivity"
+            android:parentActivityName=".TimelineActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimelineActivity" />
+        </activity>
+        <activity
+            android:name=".player.PublicBoxActivity"
+            android:parentActivityName=".StartActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".StartActivity" />
+        </activity>
+        <activity
+            android:name=".player.BoxActivity"
+            android:parentActivityName=".TimelineActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TimelineActivity" />
+        </activity>
+
+        <service
+            android:name=".services.UserInfoService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".public_profile.CommentairesActivity" />
+        <activity android:name=".SearchableActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <activity
+            android:name=".video.EditActivity"
+            android:label="@string/title_activity_edit"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".video.SubtitleActivity" />
+        <!-- /* Services -->
+
+
+        <!-- Facebook -->
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -133,55 +187,58 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ModifyPasswordActivity"
-            android:parentActivityName=".TimelineActivity">
 
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TimelineActivity" />
-        </activity>
-        <activity
-            android:name=".PublicBoxActivity"
-            android:parentActivityName=".StartActivity">
+        <!-- Firebase -->
 
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".StartActivity" />
-        </activity>
-        <activity
-            android:name=".BoxActivity"
-            android:parentActivityName=".TimelineActivity">
-
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TimelineActivity" />
-        </activity>
-
-        <service
-            android:name=".services.UserInfoService"
-            android:enabled="true"
-            android:exported="true" />
-
-        <activity android:name=".CommentairesActivity" />
-        <activity android:name=".SearchableActivity">
+        <service android:name=".services.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
+        </service>
+        <service android:name=".services.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <!--
+     Set custom default icon. This is used when no icon is set for incoming notification messages.
+     See README(https://goo.gl/l4GJaQ) for more.
+        -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_ic_notification" />
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+        <meta-data
+            android:name="firebase_messaging_auto_init_enabled"
+            android:value="false" />
 
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-        </activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".EditActivity"
-            android:label="@string/title_activity_edit"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SubtitleActivity"></activity>
+            android:name=".UsersMapActivity"
+            android:label="@string/title_activity_users_map" />
+        <activity
+            android:name=".video.VideoEditActivity"
+            android:label="@string/title_activity_video_edit"></activity>
     </application>
 
 </manifest>

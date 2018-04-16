@@ -7,7 +7,7 @@ android:layout_height="match_parent"
 android:background="@android:color/white"
 android:orientation="vertical"
 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-tools:context="com.vakoze.EditActivity"
+tools:context="com.vakoze.video.EditActivity"
 tools:showIn="@layout/activity_main">
     <!--
     <ScrollView

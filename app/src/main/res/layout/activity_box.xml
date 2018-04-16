@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.vakoze.BoxActivity">
+    tools:context="com.vakoze.player.BoxActivity">
     <!-- Login progress -->
     <ImageButton
         android:id="@+id/hideBtn"
@@ -51,11 +51,12 @@
         android:background="@drawable/play_pause_button"
         android:textColor="@color/white"
         android:visibility="gone"></ToggleButton>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000000">
-<!--
+        <!--
         <VideoView
             android:id="@+id/video_display"
             android:layout_width="match_parent"
@@ -67,8 +68,12 @@
         -->
         <SurfaceView
             android:id="@+id/box_surface_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true" />
+
         <ProgressBar
             android:id="@+id/public_video_progress"
             android:layout_width="30dp"
