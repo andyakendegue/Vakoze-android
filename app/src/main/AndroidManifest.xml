@@ -17,8 +17,23 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- Camera permissions -->
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Microphone permissions -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Require OpenGL ES >= 2.0. -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
     <application
         android:allowBackup="true"
+        android:configChanges="orientation|keyboardHidden|screenSize"
         android:fullBackupContent="@xml/vakoze_backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -102,6 +117,83 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".video.core_process.SamplesMainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name=".video.core_process.GameCapturing"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Game Capturing" />
+        <activity
+            android:name=".video.core_process.ComposerTranscodeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Transcode Video" />
+        <activity
+            android:name=".video.core_process.ComposerTranscodeCoreActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Transcode Video Core" />
+        <activity
+            android:name=".video.core_process.ComposerMediaFileInfoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Get Media File Info" />
+        <activity
+            android:name=".video.core_process.ComposerMediaFileInfoCoreActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Get Media File Info Core" />
+        <activity
+            android:name=".video.core_process.ComposerJoinActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Join Video" />
+        <activity
+            android:name=".video.core_process.ComposerJoinCoreActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Join Video Core" />
+        <activity
+            android:name=".video.core_process.ComposerCutActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Cut Video" />
+        <activity
+            android:name=".video.core_process.ComposerCutCoreActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Cut Video Core" />
+        <activity
+            android:name=".video.core_process.ComposerVideoEffectActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Video Effect" />
+        <activity
+            android:name=".video.core_process.ComposerVideoEffectCoreActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Video Effect Core" />
+        <activity
+            android:name=".video.core_process.ComposerTimeScalingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Time Scaling Playback" />
+        <activity
+            android:name=".video.core_process.ComposerTimeScalingCoreActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Time Scaling Core" />
+        <activity
+            android:name=".video.core_process.CameraCapturerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Camera Capturer"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar" />
+        <activity
+            android:name=".video.core_process.ComposerAudioEffectActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Audio Effect" />
+        <activity
+            android:name=".video.core_process.ComposerAudioEffectCoreActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Audio Effect Core" />
+        <activity
+            android:name=".video.video_gallery.Activity_galleryView"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Video Gallery" />
+        <activity
+            android:name=".video.video_gallery.VideoFolder"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Video Folder" />
+        <activity
             android:name=".authentication.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity android:name=".chatFirebase.MessengerActivity" />
@@ -144,8 +236,7 @@
 
         <service
             android:name=".services.UserInfoService"
-            android:enabled="true"
-            android:exported="true" />
+            android:enabled="true" />
 
         <activity android:name=".public_profile.CommentairesActivity" />
         <activity android:name=".SearchableActivity">
@@ -238,7 +329,8 @@
             android:label="@string/title_activity_users_map" />
         <activity
             android:name=".video.VideoEditActivity"
-            android:label="@string/title_activity_video_edit"></activity>
+            android:label="@string/title_activity_video_edit" />
+        <activity android:name=".video.VideoCameraEditActivity"></activity>
     </application>
 
 </manifest>

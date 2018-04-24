@@ -1,4 +1,26 @@
 <resources>
+    <string-array name="etapes_montage">
+        <item>Auto</item>
+        <item>Filtres</item>
+        <item>Audio</item>
+        <item>Texte</item>
+        <item>Vitesse</item>
+        <item>Publier</item>
+    </string-array>
+    <string-array name="liste_effets">
+        <item>Aucun</item>
+        <item>Flou</item>
+        <item>Gris</item>
+        <item>Négatif</item>
+        <item>Sépia</item>
+    </string-array>
+    <integer-array name="effects_img">
+        <item>@drawable/effect_no</item>
+        <item>@drawable/effect_blur</item>
+        <item>@drawable/effect_gray</item>
+        <item>@drawable/effect_invert</item>
+        <item>@drawable/effect_sepia</item>
+    </integer-array>
     <string name="app_name">Vakoze</string>
     <string name="title_activity_login">Connexion</string>
 
@@ -12,8 +34,7 @@
     <string name="error_incorrect_password">Ce mot de passe est incorrect</string>
     <string name="error_not_similar_password">les mot de passe sont différents</string>
     <string name="error_field_required">Ce champ est requis</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
+    <string name="permission_rationale">"Some permissions are needed for a good user experience with Vakoze."
     </string>
     <string name="facebook_app_id">170897913109463</string>
     <string name="fb_login_protocol_scheme">fb170897913109463</string>
@@ -183,7 +204,8 @@
     <string name="streaming_server_default_ip">10.125.226.116</string>
     <string name="streaming_server_default_port">1935</string>
     <string name="streaming_server_default_app">live</string>
-    <string name="streaming_server_default_stream">mp4:test</string><string name="grayscale_text">grayscale</string>
+    <string name="streaming_server_default_stream">mp4:test</string>
+    <string name="grayscale_text">grayscale</string>
 
     <!-- for cameraFilter_spinner; match with CameraCaptureActivity constants -->
     <string-array name="effects_names">

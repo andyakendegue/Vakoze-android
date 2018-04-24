@@ -1,14 +1,28 @@
 package com.vakoze.video.fragments;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import com.shuhart.stepview.StepView;
 import com.vakoze.R;
+import com.vakoze.video.adapter.FragmentEffectListAdapter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static android.support.v7.widget.LinearLayoutManager.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,7 +32,7 @@ import com.vakoze.R;
  * Use the {@link VideoEffectsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VideoEffectsFragment extends Fragment {
+public class VideoEffectsFragment extends Fragment implements FragmentEffectListAdapter.OnItemClicked {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -29,9 +43,15 @@ public class VideoEffectsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private View v;
+    private List<String> filterList;
+    TypedArray imageList;
+    private FragmentEffectListAdapter adapter;
+    private RecyclerView recyclerView;
 
     public VideoEffectsFragment() {
         // Required empty public constructor
+        this.filterList= new ArrayList<String>();
     }
 
     /**
@@ -65,18 +85,48 @@ public class VideoEffectsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        String source = getArguments().getString("source");
+        /*String source = getArguments().getString("source");
         Long user_id = getArguments().getLong("user_id");
         String nom = getArguments().getString("nom");
         String tags = getArguments().getString("tags");
         String categorie = getArguments().getString("categorie");
         Long video_id = getArguments().getLong("id");
-        String type = getArguments().getString("type");
-        return inflater.inflate(R.layout.fragment_video_effects, container, false);
+        String type = getArguments().getString("type");*/
+        v = inflater.inflate(R.layout.fragment_video_effects, container, false);
+
+        Context context = v.getContext();
+
+        // Set the adapter
+        recyclerView = v.findViewById(R.id.effectList);
+        //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        //recyclerView.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 36));
+
+        /*
+        if (view instanceof RecyclerView) {
+            Context context = view.getContext();
+            recyclerView = view.findViewById(R.id.list);
+            if (mColumnCount <= 1) {
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            } else {
+                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            }
+            //recyclerView.setAdapter(new MyvideoRecyclerViewAdapter(Video.ITEMS, mListener));
+
+        }*/
+        filterList = Arrays.asList(getResources().getStringArray(R.array.liste_effets));
+        imageList= getResources().obtainTypedArray(R.array.effects_img);;
+        adapter = new FragmentEffectListAdapter(getActivity(), filterList,imageList);
+        adapter.setOnClick(this);
+        recyclerView.setAdapter(adapter);
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(int uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
@@ -99,6 +149,14 @@ public class VideoEffectsFragment extends Fragment {
         mListener = null;
     }
 
+
+
+    @Override
+    public void onItemClick(String effect) {
+
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -111,6 +169,6 @@ public class VideoEffectsFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(int uri);
     }
 }

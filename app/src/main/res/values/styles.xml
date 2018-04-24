@@ -1,11 +1,11 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@android:color/holo_orange_dark</item>
-        <item name="colorAccent">@android:color/holo_orange_dark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorBackground">@color/cardview_light_background</item>
         <item name="android:colorForeground">@android:color/background_dark</item>
         <item name="android:textColorPrimary">@color/text_color_primary</item>
@@ -268,6 +268,16 @@
     <style name="Popups.Up.Right">
         <item name="android:windowEnterAnimation">@anim/show_br_to_tl</item>
         <item name="android:windowExitAnimation">@anim/hide_tl_to_br</item>
+    </style>
+
+
+    <!-- Facebook Style -->
+    <style name="FacebookLoginButton">
+        <item name="android:textSize">@dimen/smallTxtSize</item>
+        <item name="android:background">@drawable/facebook_signin_btn</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
 

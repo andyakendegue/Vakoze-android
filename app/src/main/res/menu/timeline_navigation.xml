@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/add_video_home"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/live"
         android:title="" />
     <item
         android:id="@+id/communaute"

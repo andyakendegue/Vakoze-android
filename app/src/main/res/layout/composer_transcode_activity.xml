@@ -7,7 +7,7 @@
               android:weightSum="5"
               android:keepScreenOn="true">
 
-    <org.m4m.samples.controls.TimelineItem
+    <com.vakoze.video.core_process.controls.TimelineItem
         android:id="@+id/timelineItem"
         android:layout_height="0dp"
         android:layout_weight="3"

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:weightSum="5">
 
-    <org.m4m.samples.controls.TranscodeSurfaceView
+    <com.vakoze.video.core_process.controls.TranscodeSurfaceView
         android:id="@+id/transcodeSurfaceView"
         android:layout_height="0dp"
         android:layout_width="match_parent"

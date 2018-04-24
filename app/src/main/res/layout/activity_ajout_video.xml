@@ -26,7 +26,7 @@
             android:background="@color/colorPrimary"
             android:gravity="center"
             android:orientation="horizontal">
-
+<!--
             <ImageButton
                 android:id="@+id/previous"
                 android:layout_width="wrap_content"
@@ -41,19 +41,7 @@
                 android:contentDescription="@string/rew"
                 app:srcCompat="@android:drawable/ic_media_rew" />
 
-            <ImageButton
-                android:id="@+id/play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/play"
-                app:srcCompat="@android:drawable/ic_media_play" />
 
-            <ImageButton
-                android:id="@+id/pause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/pause"
-                app:srcCompat="@android:drawable/ic_media_pause" />
 
             <ImageButton
                 android:id="@+id/ff"
@@ -68,6 +56,20 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/next"
                 app:srcCompat="@android:drawable/ic_media_next" />
+-->
+            <ImageButton
+                android:id="@+id/pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/pause"
+                app:srcCompat="@android:drawable/ic_media_pause" />
+            <ImageButton
+                android:id="@+id/play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/play"
+                app:srcCompat="@android:drawable/ic_media_play" />
+
 
             <ImageButton
                 android:id="@+id/send"

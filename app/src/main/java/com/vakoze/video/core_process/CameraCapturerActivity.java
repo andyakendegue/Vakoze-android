@@ -17,19 +17,27 @@
 package com.vakoze.video.core_process;
 
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.media.ThumbnailUtils;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewManager;
@@ -58,6 +66,8 @@ import org.m4m.effects.SepiaEffect;
 import org.m4m.effects.TextOverlayEffect;
 
 import com.vakoze.R;
+import com.vakoze.TimelineActivity;
+import com.vakoze.video.AjoutVideoActivity;
 import com.vakoze.video.core_process.controls.CameraCaptureSettingsPopup;
 
 import java.io.File;
@@ -68,6 +78,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import static com.vakoze.SplashActivity.RequestPermissionCode;
 
 public class CameraCapturerActivity extends ActivityWithTimeline implements CameraCaptureSettingsPopup.CameraCaptureSettings {
 
@@ -97,8 +109,9 @@ public class CameraCapturerActivity extends ActivityWithTimeline implements Came
                     @Override
                     public void run() {
                         isRecordingInProgress = false;
-                        showToast("Video saved to " + getVideoFilePath());
-                        updateVideoFilePreview();
+                        //showToast("Video saved to " + getVideoFilePath());
+                        //updateVideoFilePreview();
+
                         captureButton.setEnabled(true);
                     }
                 });
@@ -570,6 +583,10 @@ public class CameraCapturerActivity extends ActivityWithTimeline implements Came
         videoFormat.setVideoIFrameInterval(1);
         capture.setTargetVideoFormat(videoFormat);
 
+        /** Avoid Audio Bug */
+        /*if (recordAudio){
+            requestAudioPermissions();
+        }*/
         if (recordAudio) {
             org.m4m.AudioFormat audioFormat = new AudioFormatAndroid("audio/mp4a-latm", 44100, 1);
             capture.setTargetAudioFormat(audioFormat);
@@ -629,6 +646,7 @@ public class CameraCapturerActivity extends ActivityWithTimeline implements Came
             capture.setTargetFile(getVideoFilePath());
         } catch (IOException e) {
             String message = (e.getMessage() != null) ? e.getMessage() : e.toString();
+            Log.e("VakoError",message);
 
             showMessageBox(message, new DialogInterface.OnClickListener() {
                 @Override
@@ -658,6 +676,17 @@ public class CameraCapturerActivity extends ActivityWithTimeline implements Came
 
                 camera.setParameters(parameters);
             }
+
+            String selectedPath = getVideoFilePath();
+            String videoType ="mp4";
+
+            Intent i = new Intent(CameraCapturerActivity.this, AjoutVideoActivity.class);
+            //Intent i = new Intent(TimelineActivity.this, EditActivity.class);
+            i.putExtra("filePath", selectedPath);
+            //i.putExtra("fileUri", videoToSend);
+            i.putExtra("type", "gallery");
+            i.putExtra("videoType", videoType);
+            startActivity(i);
         }
     }
 

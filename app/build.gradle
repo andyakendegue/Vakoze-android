@@ -14,7 +14,7 @@ android {
         applicationId "com.vakoze"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 5
+        versionCode 6
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
@@ -34,11 +34,6 @@ android {
             renderscriptDebuggable false
         }
         debug {
-        }
-    }
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
         }
     }
     aaptOptions {
@@ -99,9 +94,16 @@ dependencies {
     // video lib
     //implementation 'com.github.indexOS.media-for-mobile:android:master-SNAPSHOT'
     //implementation 'com.github.indexOS.media-for-mobile:android:fd9f7c56cfab63eee2ac3ea5a8b222a54cb7f9fc'
+
+    implementation 'com.bignerdranch.android:recyclerview-multiselect:0.2'
+    implementation 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'
     implementation project(':domain')
     implementation project(':android')
     implementation project(':effects')
+
+    // Timeline
+    implementation project(':stepview')
+    implementation 'com.github.savvyapps:ToggleButtonLayout:1.0.0'
 
 
 }

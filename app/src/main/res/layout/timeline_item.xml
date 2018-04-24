@@ -60,7 +60,7 @@
 
     </RelativeLayout>
 
-    <org.m4m.samples.controls.RangeSelector
+    <com.vakoze.video.core_process.controls.RangeSelector
         android:id="@+id/segment"
         android:layout_width="match_parent"
         android:layout_height="30dp"
