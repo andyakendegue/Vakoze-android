@@ -2,10 +2,12 @@ package com.vakoze.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,10 +20,16 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -50,6 +58,8 @@ import com.vakoze.lib.SharedPrefManager;
 import com.vakoze.lib.VolleyMultipartRequest;
 import com.vakoze.models.User;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,7 +82,8 @@ public class ProfilFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private FragmentTabHost mTabHost;
     private TextView textNom, textPrenom, textEmail, textPhone, nbrFan, nbrAbo;
-    private ImageView profile_pic;
+    //private ImageView profile_pic;
+    private CircleImageView profile_pic;
     private Button btnModify;
 
     // Phone number
@@ -84,6 +95,8 @@ public class ProfilFragment extends Fragment {
     User user;
     private static final int PERMISSION_REQUEST_CODE = 1;
     FragmentPagerAdapter adapterViewPager;
+    private Toolbar toolbar;
+    private SearchView searchView;
 
     public ProfilFragment() {
         // Required empty public constructor
@@ -118,6 +131,7 @@ public class ProfilFragment extends Fragment {
         user = SharedPrefManager.getInstance(getActivity()).getUser();
         searchFollows(user.getId());
         searchFans(user.getId());
+        setHasOptionsMenu(true);
 
     }
 
@@ -126,10 +140,15 @@ public class ProfilFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         profilView = inflater.inflate(R.layout.fragment_profil, container, false);
+        toolbar = (Toolbar) profilView.findViewById(R.id.profileToolbar);
+        Drawable drawable = ContextCompat.getDrawable(getContext(),R.drawable.ic_settings);
+        toolbar.setOverflowIcon(drawable);
+        toolbar.setTitle("");
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         textNom = profilView.findViewById(R.id.textNom);
         textPrenom = profilView.findViewById(R.id.textPrenom);
-        textEmail = profilView.findViewById(R.id.textEmail);
-        textPhone = profilView.findViewById(R.id.textPhone);
+        //textEmail = profilView.findViewById(R.id.textEmail);
+        //textPhone = profilView.findViewById(R.id.textPhone);
         profile_pic = profilView.findViewById(R.id.profile_pic);
         nbrFan = profilView.findViewById(R.id.nbrFan);
         nbrFan.setText("0");
@@ -137,14 +156,14 @@ public class ProfilFragment extends Fragment {
         nbrAbo.setText("0");
         //profile_pic.setBackgroundResource(R.drawable.com_facebook_profile_picture_blank_square);
         profile_pic.setImageResource(R.drawable.profile_pic);
-        btnModify = profilView.findViewById(R.id.btnModified);
-        btnModify.setOnClickListener(new View.OnClickListener() {
+        //btnModify = profilView.findViewById(R.id.btnModified);
+        /*btnModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent modifyProfile = new Intent(getActivity(), ModifierInfosActivity.class);
                 startActivity(modifyProfile);
             }
-        });
+        });*/
         if(user.getProfile_pic()!=null&&!user.getProfile_pic().isEmpty()&&!user.getProfile_pic().equals("")){
             Glide.with(getActivity())
                     .load(user.getProfile_pic())
@@ -164,13 +183,13 @@ public class ProfilFragment extends Fragment {
         textNom.setText(user.getNom());
         //toolbar.setBackgroundResource();
         textPrenom.setText(user.getPrenom());
-        textEmail.setText(user.getEmail());
+        /*textEmail.setText(user.getEmail());
         if(user.getPhone().equals("")||user.getPhone().equals(null)){
             textPhone.setText(String.valueOf(user.getId()));
         } else {
             textPhone.setText(String.valueOf(user.getPhone()));
         }
-
+*/
         /*
         if (!checkPermission(wantPermission)) {
             requestPermission(wantPermission);
@@ -200,9 +219,10 @@ public class ProfilFragment extends Fragment {
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) profilView.findViewById(R.id.tabProfil);
         tabLayout.setupWithViewPager(vpPager);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_actualites2);
+        /*tabLayout.getTabAt(0).setIcon(R.drawable.ic_actualites2);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_reposts2);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_categories2);
+        */
         return profilView;
     }
 
@@ -253,6 +273,28 @@ public class ProfilFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
+    @Override
+    public void onCreateOptionsMenu(
+            Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.profil, menu);
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.profil:
+                // do s.th.
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
 
     @Override
@@ -315,7 +357,7 @@ public class ProfilFragment extends Fragment {
                                 nbrFan.setText(objData.getString("fans"));
                             } else if(objData.getBoolean("error")){
                                 nbrFan.setText("0");
-                                displayToast("L'utilisateur n'a aucun fan.");
+                                //displayToast("L'utilisateur n'a aucun fan.");
                             }
                         } catch (JSONException e) {
                             //Dismiss the dialog
@@ -365,7 +407,7 @@ public class ProfilFragment extends Fragment {
 
                             } else if(objData.getBoolean("error")){
                                 nbrAbo.setText("0");
-                                displayToast("L'utilisateur n'a aucun Abonnements.");
+                                //displayToast("L'utilisateur n'a aucun Abonnements.");
                             }
                         } catch (JSONException e) {
                             //Dismiss the dialog

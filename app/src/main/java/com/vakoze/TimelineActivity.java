@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,14 +27,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
@@ -50,7 +56,6 @@ import com.vakoze.fragments.AjoutVideoFragment;
 import com.vakoze.fragments.CommunauteFragment;
 import com.vakoze.fragments.NotificationsFragment;
 import com.vakoze.fragments.ProfilFragment;
-import com.vakoze.fragments.PublicNotificationsFragment;
 import com.vakoze.fragments.videoFragment;
 import com.vakoze.lib.Config;
 import com.vakoze.lib.Utility;
@@ -70,7 +75,7 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
         CommunauteFragment.OnFragmentInteractionListener,
         NotificationsFragment.OnFragmentInteractionListener,AjoutVideoFragment.OnFragmentInteractionListener {
 
-    private TextView mTextMessage;
+    private TextView mTitle, mTextMessage, textview;
     private GoogleSignInClient mGoogleSignInClient;
 
     private String userChoosenTask;
@@ -88,7 +93,49 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
     private static final String SHARED_PREF_NAME = "vakozesharedpref";
     private Toolbar toolbar;
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
+    private ImageButton btnActu, btnCommunaute, btnShot, btnProfil, btnNotifications;
 
+    private LayoutParams layoutparams;
+    public boolean fragmentManager(int btn){
+        int id = btn;
+        Fragment fragment = null;
+        //CharSequence title = getString(R.string.app_name);
+        if (id == R.id.btnActu) {
+            fragment = new videoFragment();
+            //actionBar.show();
+            setSupportActionBar(toolbar);
+            toolbar.setTitle("Actualités");
+            toolbar.setTitleMarginStart(30);
+            toolbar.setTitleMarginEnd(30);
+            getSupportActionBar().show();
+        } else if (id == R.id.btnProfil) {
+            fragment = new ProfilFragment();
+            //actionBar.hide();
+            getSupportActionBar().hide();
+            //appBarLayout.setVisibility(View.GONE);
+        } else if (id == R.id.btnShot) {
+            //fragment = new AjoutVideoFragment();
+            selectImage();
+        } else if (id == R.id.btnCommunaute) {
+            fragment = new CommunauteFragment();
+            //actionBar.hide();
+            getSupportActionBar().hide();
+            //appBarLayout.setVisibility(View.GONE);
+        } else if (id == R.id.btnNotifications) {
+            fragment = new NotificationsFragment();
+            //actionBar.hide();
+            getSupportActionBar().hide();
+            //appBarLayout.setVisibility(View.GONE);
+        }
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.container, fragment);
+            ft.commit();
+        }
+        return true;
+    }
+
+    /*
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -107,6 +154,7 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
             }
             return false;
             */
+            /*
             int id = item.getItemId();
             Fragment fragment = null;
             //CharSequence title = getString(R.string.app_name);
@@ -138,6 +186,7 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
             return true;
         }
     };
+    */
     @Override
     protected void onStart(){
             super.onStart();
@@ -167,10 +216,18 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
             actionBar.setTitle("");
         }*/
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
+        toolbar.setTitle("Actualités");
+        toolbar.setTitleMarginStart(30);
+        toolbar.setTitleMarginEnd(30);
+        //mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+
+
+
         setSupportActionBar(toolbar);
         //actionBar.hide();
         mTextMessage = (TextView) findViewById(R.id.message);
+
+        /*
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setItemIconTintList(null);
@@ -183,11 +240,15 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
             // set your width here
             layoutParams.width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, displayMetrics);
             iconView.setLayoutParams(layoutParams);
-        }
+        }*/
+
+        //mTitle.setText("Actualités");
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.container, new videoFragment());
         ft.commit();
         FloatingActionButton fabSignOut = findViewById(R.id.fab_signout);
+        fabSignOut.setVisibility(View.INVISIBLE);
+
 
         fabSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,6 +276,42 @@ public class TimelineActivity extends AppCompatActivity implements videoFragment
         };
         displayFirebaseRegId();
         */
+        btnActu = findViewById(R.id.btnActu);
+        btnActu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager(R.id.btnActu);
+
+            }
+        });
+        btnCommunaute = findViewById(R.id.btnCommunaute);
+        btnCommunaute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager(R.id.btnCommunaute);
+            }
+        });
+        btnNotifications = findViewById(R.id.btnNotifications);
+        btnNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager(R.id.btnNotifications);
+            }
+        });
+        btnShot = findViewById(R.id.btnShot);
+        btnShot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager(R.id.btnShot);
+            }
+        });
+        btnProfil = findViewById(R.id.btnProfil);
+        btnProfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager(R.id.btnProfil);
+            }
+        });
     }
     private void logout() {
         LoginManager.getInstance().logOut();

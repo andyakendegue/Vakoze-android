@@ -19,27 +19,18 @@ import com.vakoze.R;
 
 
 public class FragmentEffectListAdapter extends RecyclerView.Adapter<FragmentEffectListAdapter.ViewHolder>  {
-
     private List<String> effect = new ArrayList<String>();
     private TypedArray images = null;
-
     private Context context;
     private LayoutInflater layoutInflater;
-
     private OnItemClicked onClick;
     LinearLayout effectLayout;
-
     public FragmentEffectListAdapter(Context context, List<String> effect, TypedArray images) {
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
         this.effect = effect;
         this.images = images;
     }
-
-
-
-
-
     public interface OnItemClicked {
         void onItemClick(String effect);
     }
@@ -52,16 +43,27 @@ public class FragmentEffectListAdapter extends RecyclerView.Adapter<FragmentEffe
     }
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        final int[] row_index = new int[1];
         holder.effectName.setText(effect.get(position));
         holder.effectImage.setImageResource(images.getResourceId(position, -1));
         holder.effectLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.effectLayout.setBackgroundColor(v.getContext().getResources().getColor(R.color.white));
-                holder.effectLayout.setBackgroundColor(v.getContext().getResources().getColor(R.color.colorPrimary));
+                //holder.effectLayout.setBackgroundColor(v.getContext().getResources().getColor(R.color.white));
+                //holder.effectLayout.setBackgroundColor(v.getContext().getResources().getColor(R.color.colorPrimary));
                 onClick.onItemClick("capp");
+                row_index[0] =position;
             }
         });
+
+        if(row_index[0] ==position){
+            holder.effectLayout.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+        }
+        else
+        {
+            holder.effectLayout.setBackgroundColor(context.getResources().getColor(R.color.white));
+        }
+
     }
     @Override
     public long getItemId(int position) {

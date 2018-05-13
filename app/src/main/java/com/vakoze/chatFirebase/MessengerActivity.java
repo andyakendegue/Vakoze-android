@@ -113,17 +113,17 @@ public class MessengerActivity extends AppCompatActivity {
                 TextView messageText = v.findViewById(R.id.message_text);
                 TextView messageUser = v.findViewById(R.id.message_user);
                 TextView messageTime = v.findViewById(R.id.message_time);
-                if(model.getMessageTo().equals(messengerTo)||model.getMessageUser().equals(user.getU_id())) {
+                if(model.getMessageTo().equals(user.getU_id())&&model.getMessageUser().equals(messengerTo)) {
                     // Set their text
 
                     try{
                         messageText.setText(model.getMessageText());
                         //messageUser.setText(model.getMessageUser());
                         //messageUser.setText(String.valueOf(messengerTo));
-                        if(model.getMessageTo().equals(messengerTo)){
+                        if(model.getMessageUser().equals(messengerTo)){
                             messageUser.setText(name);
                             messageUser.setTextColor(getResources().getColor(R.color.brownDark));
-                        } else if(model.getMessageUser().equals(user.getU_id())){
+                        } else if(model.getMessageTo().equals(user.getU_id())){
                             messageUser.setText(user.getPrenom());
                             messageUser.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                         }

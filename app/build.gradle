@@ -57,25 +57,22 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:support-vector-drawable:27.1.1'
     implementation 'com.android.support:design:27.1.1'
-    implementation 'com.google.firebase:firebase-messaging:15.0.0'
-    implementation 'com.google.firebase:firebase-auth:15.0.0'
-    implementation 'com.firebaseui:firebase-ui:0.6.0'
-    implementation 'com.google.firebase:firebase-database:15.0.0'
     implementation 'com.google.android.gms:play-services-maps:15.0.0'
-    implementation 'com.google.firebase:firebase-crash:15.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.android.gms:play-services-auth:15.0.0'
     implementation 'com.android.volley:volley:1.1.0'
     implementation 'com.google.code.gson:gson:2.8.0'
     implementation 'com.github.bumptech.glide:glide:4.5.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.5.0'
     implementation 'com.facebook.android:facebook-android-sdk:4.30.0'
-    implementation 'com.facebook.android:facebook-login:[4,5)'
+    implementation 'com.facebook.android:facebook-login:4.33.0'
     implementation('io.socket:socket.io-client:0.8.3') {
         exclude group: 'org.json', module: 'json'
     }
+    // Circular Image View
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
     // Elastic Search
     implementation 'com.loopj.android:android-async-http:1.4.9'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
@@ -85,6 +82,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.4.2'
     // Photo Filters
     implementation 'info.androidhive:imagefilters:1.0.7'
+    // Blur
+    implementation 'net.qiujuer.genius:graphics:2.0.0'
     // butter knife
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
@@ -104,6 +103,13 @@ dependencies {
     // Timeline
     implementation project(':stepview')
     implementation 'com.github.savvyapps:ToggleButtonLayout:1.0.0'
+    // Firebase
+    implementation 'com.google.firebase:firebase-messaging:15.0.2'
+    implementation 'com.google.firebase:firebase-auth:15.1.0'
+    implementation 'com.firebaseui:firebase-ui:0.6.0'
+    implementation 'com.google.firebase:firebase-database:15.0.0'
+    implementation 'com.google.firebase:firebase-crash:15.0.2'
+
 
 
 }

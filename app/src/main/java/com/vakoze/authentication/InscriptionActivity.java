@@ -1,49 +1,62 @@
-package com.vakoze;
+package com.vakoze.authentication;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
+import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.Calendar;
-import java.util.Date;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.vakoze.R;
+import com.vakoze.TimelineActivity;
+import com.vakoze.fragments.RepostFragment;
 import com.vakoze.lib.EndPoints;
+import com.vakoze.lib.FullScreenMediaController;
 import com.vakoze.lib.SharedPrefManager;
-import com.vakoze.lib.VolleyMultipartRequest;
 import com.vakoze.models.User;
 
 public class InscriptionActivity extends AppCompatActivity {
@@ -84,18 +97,22 @@ public class InscriptionActivity extends AppCompatActivity {
          */
         // Initialisation des boutons
         profil = findViewById(R.id.profil);
-        Button cancel = findViewById(R.id.cancel);
-        Button valider = findViewById(R.id.valider);
+
+
 
 
         // Annuler
+        /*
+        Button cancel = findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 NavUtils.navigateUpFromSameTask(InscriptionActivity.this);
 
             }
         });
+        */
         // Inscription
+        Button valider = findViewById(R.id.valider);
         valider.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -105,6 +122,16 @@ public class InscriptionActivity extends AppCompatActivity {
                     displayToast("vous n'êtes pas connecté à internet");
                 }
 
+            }
+        });
+
+        // Terms and conditions
+        TextView terms = findViewById(R.id.termsAndConditions);
+        terms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment diag = new DialogFragment();
+                diag.show(getSupportFragmentManager(), "Terms and conditions");
             }
         });
     }
@@ -446,4 +473,45 @@ public class InscriptionActivity extends AppCompatActivity {
 
     }
 
+    public static class TermsFragment extends DialogFragment {
+
+        View v ;
+        public TermsFragment() {
+            // Required empty public constructor
+        }
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+        }
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            // Inflate the layout for this fragment
+            return inflater.inflate(R.layout.fragment_terms, container, false);
+        }
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            v= inflater.inflate(R.layout.fragment_terms, null);
+            builder
+                    .setView(v)
+                    .setPositiveButton("J'ai compris", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // FIRE ZE MISSILES!
+                            //repost(video_id,msgRepost.getText().toString());
+                            //displayToast("Repost en cours...");
+                            Log.e("test log", "ok");
+                        }
+                    })
+                    .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
 }

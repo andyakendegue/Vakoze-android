@@ -5,12 +5,16 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -20,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -54,6 +59,8 @@ import com.vakoze.lib.VolleyMultipartRequest;
 import com.vakoze.models.User;
 import com.vakoze.save.MainActivity;
 
+import net.qiujuer.genius.graphics.Blur;
+
 
 public class AjoutVideoActivity extends AppCompatActivity {
 
@@ -62,6 +69,8 @@ public class AjoutVideoActivity extends AppCompatActivity {
     private String pathToStoredVideo, nom , tags, categories;;
     private VideoView displayRecordedVideo;
     private ImageButton previous, rew, play, pause, ff, forward, sendVideoButton;
+    private ImageView imgBlur, imgNormal;
+    private Bitmap thumb, overlay;
     private static final String SERVER_PATH = "";
     // Taille maximale du téléchargement
 
@@ -79,6 +88,7 @@ public class AjoutVideoActivity extends AppCompatActivity {
     long totalSize = 0;
     private File sourceFile;
     private ScrollView ajout_video_activity;
+    private int[] pix;
 
 
     @Override
@@ -158,6 +168,35 @@ public class AjoutVideoActivity extends AppCompatActivity {
         displayRecordedVideo.setVideoPath(receivedUri);
         //displayRecordedVideo.setUp(receivedUri,JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, receivedUri.substring(receivedUri.lastIndexOf("/")+1));
         displayRecordedVideo.seekTo(100);
+        imgNormal = findViewById(R.id.imgNormal);
+        imgBlur = findViewById(R.id.imgBlur);
+
+        thumb = ThumbnailUtils.createVideoThumbnail(getVideoFilePath(), MediaStore.Video.Thumbnails.MINI_KIND);
+
+        if (thumb == null) {
+            //videoFilePreview.setVisibility(View.INVISIBLE);
+        } else {
+
+            imgNormal.setImageBitmap(thumb);
+            overlay = thumb.copy(thumb.getConfig(), true);
+
+
+            int w = overlay.getWidth();
+            int h = overlay.getHeight();
+            int[] pix = new int[w * h];
+            overlay.getPixels(pix, 0, w, 0, 0, w, h);
+
+
+
+            pix = Blur.onStackBlurPixels(pix, w, h, (int) 3);
+            overlay.setPixels(pix, 0, w, 0, 0, w, h);
+// Bitmap JNI Native
+
+            overlay = Blur.onStackBlur(overlay, (int) 20);
+            imgBlur.setImageBitmap(overlay);
+
+
+        }
 
 
 
@@ -233,7 +272,26 @@ public class AjoutVideoActivity extends AppCompatActivity {
                 } else {
 
                     //new uploadVideoToServer(nom, tags, categories, receivedUri, user, AjoutVideoActivity.this).execute();
-                    uploadMp4(nom, tags, categories);
+
+                    if(thumb != null&& overlay !=null) {
+                        uploadMp4(nom, tags, overlay, thumb, categories);
+                    } else {
+                        final CharSequence[] items = { "OK" };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(AjoutVideoActivity.this);
+                        builder.setTitle("Aucune image!");
+                        builder.setMessage("Aucune image n\'a été générée.");
+                        builder.setCancelable(true);
+                        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();;
+                            }
+
+
+                        });
+                        builder.show();
+                    }
                 }
 
             }
@@ -242,6 +300,16 @@ public class AjoutVideoActivity extends AppCompatActivity {
         //Toast.makeText(AjoutVideoActivity.this, receivedUri, Toast.LENGTH_LONG).show();
         Log.d("Filepath", receivedUri);
 
+
+
+    }
+
+    private File getAndroidMoviesFolder() {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
+    }
+
+    public String getVideoFilePath() {
+        return getAndroidMoviesFolder().getAbsolutePath() + "/capture.mp4";
     }
 
 
@@ -483,7 +551,7 @@ public class AjoutVideoActivity extends AppCompatActivity {
 
 
 
-    private void uploadMp4(final String nom, final String tags, final String categorie) {
+    private void uploadMp4(final String nom, final String tags, final Bitmap blur, final Bitmap normal, final String categorie) {
 
         loadProgress();
 
@@ -548,7 +616,7 @@ public class AjoutVideoActivity extends AppCompatActivity {
                         //Dismiss the dialog
                         progressDialog.dismiss();
                         displayToast("Upload Non Réussi"+error.getMessage());
-                        Log.e("VakoError :Volley Error",error.getMessage());
+                        //Log.e("VakoError :Volley Error",error.getMessage());
                     }
                 }) {
 
@@ -567,6 +635,7 @@ public class AjoutVideoActivity extends AppCompatActivity {
                 params.put("categorie", categorie);
                 params.put("description", tags);
                 params.put("type", "mp4");
+                params.put("img_type", "png");
                 return params;
             }
 
@@ -579,6 +648,9 @@ public class AjoutVideoActivity extends AppCompatActivity {
                 long imagename = System.currentTimeMillis();
                 final DataPart file = new DataPart(imagename + ".mp4", videoToSend);
                 params.put("file", file);
+                params.put("file", new DataPart("blur_"+imagename + ".png", getFileDataFromDrawable(blur)));
+                params.put("file", new DataPart("normal_"+imagename + ".png", getFileDataFromDrawable(normal)));
+
                 return params;
             }
 
@@ -600,6 +672,11 @@ public class AjoutVideoActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         Volley.newRequestQueue(this).add(volleyMultipartRequest);
+    }
+    public byte[] getFileDataFromDrawable(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
     }
 
     private void loadProgress(){

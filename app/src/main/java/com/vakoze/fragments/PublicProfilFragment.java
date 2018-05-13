@@ -84,20 +84,21 @@ public class PublicProfilFragment extends Fragment {
         textNom.setText("");
         textPrenom = profilView.findViewById(R.id.textPrenom);
         textPrenom.setText("");
-        textEmail = profilView.findViewById(R.id.textEmail);
+        /*textEmail = profilView.findViewById(R.id.textEmail);
         textEmail.setText("");
         textPhone = profilView.findViewById(R.id.textPhone);
         textPhone.setText("");
+        typeAffichage = profilView.findViewById(R.id.typeAffichage);
+        typeAffichage.setText("");
+        */
         nbrAbo = profilView.findViewById(R.id.nbrAbo);
         nbrAbo.setText("");
         nbrFan = profilView.findViewById(R.id.nbrFan);
         nbrFan.setText("");
-        typeAffichage = profilView.findViewById(R.id.typeAffichage);
-        typeAffichage.setText("");
         profile_pic = profilView.findViewById(R.id.profile_pic);
         //profile_pic.setBackgroundResource(R.drawable.com_facebook_profile_picture_blank_square);
         profile_pic.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
-
+/*
         btnModify = profilView.findViewById(R.id.btnModified);
         btnModify.setText("Se connecter");
         btnModify.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +108,7 @@ public class PublicProfilFragment extends Fragment {
                 startActivity(modifyProfile);
             }
         });
+        */
         ViewPager vpPager = (ViewPager) profilView.findViewById(R.id.container);
         adapterViewPager = new ProfilFragment.MyPagerAdapter(getActivity().getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);

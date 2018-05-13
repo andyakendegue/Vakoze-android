@@ -260,7 +260,7 @@ public class MesVideosFragment extends Fragment implements SwipeRefreshLayout.On
 
                             } else if(objData.getBoolean("error")){
 
-                                displayToast("L'utilisateur n'a aucune videos.");
+                                //displayToast("L'utilisateur n'a aucune videos.");
                             }
                         } catch (JSONException e) {
                             //Dismiss the dialog

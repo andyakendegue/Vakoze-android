@@ -25,15 +25,12 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEffects
         PredefinedMountingFragment.OnFragmentInteractionListener{
 
     private TextView mTextMessage;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_edit);
         mTextMessage = (TextView) findViewById(R.id.message);
         final StepView stepView = findViewById(R.id.step_view);
-
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.video_edit_container, new VideoEffectsFragment());
         ft.commit();

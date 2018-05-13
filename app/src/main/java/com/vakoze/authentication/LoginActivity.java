@@ -63,7 +63,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -81,9 +80,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.vakoze.InscriptionActivity;
 import com.vakoze.R;
 import com.vakoze.TimelineActivity;
 import com.vakoze.lib.EndPoints;
@@ -94,12 +91,6 @@ import com.facebook.FacebookSdk;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.READ_CONTACTS;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.RECORD_AUDIO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 /**
  * A login screen that offers login via email/password.

@@ -387,9 +387,8 @@ public class CommunauteFragment extends Fragment implements SwipeRefreshLayout.O
         ConnectivityManager cm =
                 (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
+        return (activeNetwork != null) &&
                 activeNetwork.isConnectedOrConnecting();
-        return isConnected;
     }
     private void whiteNotificationBar(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

@@ -1,6 +1,7 @@
 package com.vakoze;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,13 +11,19 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.vakoze.authentication.LoginActivity;
 import com.vakoze.fragments.PublicCommunauteFragment;
@@ -31,7 +38,50 @@ public class PublicTimelineActivity extends AppCompatActivity implements PublicV
         PublicNotificationsFragment.OnFragmentInteractionListener {
     //ActionBar actionBar;
     private Toolbar toolbar;
+    private ImageButton btnActu, btnCommunaute, btnShot, btnProfil, btnNotifications;
+    private TextView mTitle, textview;
 
+
+    private RelativeLayout.LayoutParams layoutparams;
+    public boolean fragmentManager(int btn){
+        int id = btn;
+        Fragment fragment = null;
+        //CharSequence title = getString(R.string.app_name);
+        if (id == R.id.btnActu) {
+            fragment = new PublicVideoFragment();
+            toolbar.setTitle("Actualités");
+            toolbar.setTitleMarginStart(30);
+            toolbar.setTitleMarginEnd(30);
+            //mTitle.setText("Actualités");
+            //actionBar.show();
+            getSupportActionBar().show();
+        } else if (id == R.id.btnProfil) {
+            fragment = new PublicProfilFragment();
+            //actionBar.hide();
+            getSupportActionBar().hide();
+            //appBarLayout.setVisibility(View.GONE);
+        } else if (id == R.id.btnShot) {
+            //fragment = new AjoutVideoFragment();
+            selectImage();
+        } else if (id == R.id.btnCommunaute) {
+            fragment = new PublicCommunauteFragment();
+            //actionBar.hide();
+            getSupportActionBar().hide();
+            //appBarLayout.setVisibility(View.GONE);
+        } else if (id == R.id.btnNotifications) {
+            fragment = new PublicNotificationsFragment();
+            //actionBar.hide();
+            getSupportActionBar().hide();
+            //appBarLayout.setVisibility(View.GONE);
+        }
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.container, fragment);
+            ft.commit();
+        }
+        return true;
+    }
+/*
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -72,6 +122,7 @@ public class PublicTimelineActivity extends AppCompatActivity implements PublicV
             return true;
         }
     };
+    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,10 +135,18 @@ public class PublicTimelineActivity extends AppCompatActivity implements PublicV
         // Remember that you should never show the action bar if the
         // status bar is hidden, so hide that too if necessary.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Actualités");
+        toolbar.setTitleMarginStart(30);
+        toolbar.setTitleMarginEnd(30);
+        //mTitle.setText("Actualités");
+
+        //mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         //appBarLayout = findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
+
         //actionBar = getSupportActionBar();
         //actionBar.hide();
+        /*
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setItemIconTintList(null);
@@ -100,12 +159,50 @@ public class PublicTimelineActivity extends AppCompatActivity implements PublicV
             // set your width here
             layoutParams.width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 36, displayMetrics);
             iconView.setLayoutParams(layoutParams);
-        }
+        }*/
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.container, new PublicVideoFragment());
         ft.commit();
+
         FloatingActionButton fabSignOut = findViewById(R.id.fab_signout);
         fabSignOut.setVisibility(View.INVISIBLE);
+        btnActu = findViewById(R.id.btnActu);
+        btnActu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager(R.id.btnActu);
+
+            }
+        });
+        btnCommunaute = findViewById(R.id.btnCommunaute);
+        btnCommunaute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager(R.id.btnCommunaute);
+            }
+        });
+        btnNotifications = findViewById(R.id.btnNotifications);
+        btnNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager(R.id.btnNotifications);
+            }
+        });
+        btnShot = findViewById(R.id.btnShot);
+        btnShot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager(R.id.btnShot);
+            }
+        });
+        btnProfil = findViewById(R.id.btnProfil);
+        btnProfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager(R.id.btnProfil);
+            }
+        });
         //setAppBarHeight();
     }
     @Override
@@ -118,6 +215,7 @@ public class PublicTimelineActivity extends AppCompatActivity implements PublicV
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
+
 
 
 

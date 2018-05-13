@@ -58,8 +58,8 @@ public class ProfilActivity extends AppCompatActivity {
 
         textNom = findViewById(R.id.textNom);
         textPrenom = findViewById(R.id.textPrenom);
-        textEmail = findViewById(R.id.textEmail);
-        textPhone = findViewById(R.id.textPhone);
+        //textEmail = findViewById(R.id.textEmail);
+        //textPhone = findViewById(R.id.textPhone);
         profile_pic = findViewById(R.id.profile_pic);
 
 
@@ -80,9 +80,5 @@ public class ProfilActivity extends AppCompatActivity {
         textPrenom.setText(user.getPrenom());
         textEmail.setText(user.getEmail());
         textPhone.setText(user.getPhone());
-
-
-
-
     }
 }

@@ -60,7 +60,7 @@
                 android:value=".StartActivity" />
         </activity>
         <activity
-            android:name=".InscriptionActivity"
+            android:name=".authentication.InscriptionActivity"
             android:parentActivityName=".authentication.LoginActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -330,7 +330,8 @@
         <activity
             android:name=".video.VideoEditActivity"
             android:label="@string/title_activity_video_edit" />
-        <activity android:name=".video.VideoCameraEditActivity"></activity>
+        <activity android:name=".video.VideoCameraEditActivity" />
+        <activity android:name=".authentication.RenewPasswordActivity"></activity>
     </application>
 
 </manifest>

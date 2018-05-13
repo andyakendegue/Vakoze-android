@@ -53,7 +53,6 @@ public class VideoEffectsFragment extends Fragment implements FragmentEffectList
         // Required empty public constructor
         this.filterList= new ArrayList<String>();
     }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -71,7 +70,6 @@ public class VideoEffectsFragment extends Fragment implements FragmentEffectList
         fragment.setArguments(args);
         return fragment;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +78,6 @@ public class VideoEffectsFragment extends Fragment implements FragmentEffectList
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -93,9 +90,7 @@ public class VideoEffectsFragment extends Fragment implements FragmentEffectList
         Long video_id = getArguments().getLong("id");
         String type = getArguments().getString("type");*/
         v = inflater.inflate(R.layout.fragment_video_effects, container, false);
-
         Context context = v.getContext();
-
         // Set the adapter
         recyclerView = v.findViewById(R.id.effectList);
         //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
@@ -104,7 +99,6 @@ public class VideoEffectsFragment extends Fragment implements FragmentEffectList
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         //recyclerView.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 36));
-
         /*
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -124,14 +118,12 @@ public class VideoEffectsFragment extends Fragment implements FragmentEffectList
         recyclerView.setAdapter(adapter);
         return v;
     }
-
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(int uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -142,19 +134,13 @@ public class VideoEffectsFragment extends Fragment implements FragmentEffectList
                     + " must implement OnFragmentInteractionListener");
         }
     }
-
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
-
-
-
     @Override
     public void onItemClick(String effect) {
-
-
     }
 
     /**
